@@ -10,6 +10,7 @@ import FormScreen from './src/screens/FormScreen';
 import WardrobeScreen from './src/screens/WardrobeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import ExploreScreen from './src/screens/ExploreScreen';
+import HomeScreen from './src/screens/HomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,7 @@ export default function App() {
           <Stack.Screen name="Roupas" component={WardrobeScreen} />
           <Stack.Screen name="Perfil" component={ProfileScreen} />
           <Stack.Screen name="Explorar" component={ExploreScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
