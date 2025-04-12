@@ -1,106 +1,148 @@
 // src/screens/ExploreScreen.js
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, SafeAreaView, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView
+} from 'react-native';
 import BottomNavBar from '../components/navigation-bar/NavBar';
 
-const products = [
-  { id: '1', name: 'Jaqueta Jeans', brand: 'Zara', price: 'R$ 199,90', image: require('../../assets/clothes-placeholder.jpg') },
-  { id: '2', name: 'Tênis Branco', brand: 'Nike', price: 'R$ 349,90', image: require('../../assets/clothes-placeholder.jpg') },
-  { id: '3', name: 'Blusa de Tricô', brand: 'H&M', price: 'R$ 159,90', image: require('../../assets/clothes-placeholder.jpg') },
-  { id: '4', name: 'Calça Skinny', brand: "Levi's", price: 'R$ 299,90', image: require('../../assets/clothes-placeholder.jpg') },
-];
-
 export default function ExploreScreen() {
-  const [search, setSearch] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('');
-  const [selectedPrice, setSelectedPrice] = useState('');
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [inputText, setInputText] = useState('');
+  const [response, setResponse] = useState('');
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-    });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
-    });
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
+  const handleSuggestion = () => {
+    if (inputText.trim() === '') return;
+    setResponse(`✨ Para: "${inputText}"\n\n👔 Look sugerido:\n• Camisa branca de linho\n• Calça de alfaiataria cinza\n• Mocassim marrom\n• Acessórios discretos\n\n🌤️ Clima atual: 27°C, ensolarado`);
+  };
 
-  const filteredProducts = products.filter(item =>
-    (selectedBrand === '' || item.brand.toLowerCase().includes(selectedBrand.toLowerCase())) &&
-    (selectedPrice === '' || parseFloat(item.price.replace('R$', '').replace(',', '.')) <= parseFloat(selectedPrice)) &&
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleNewSuggestion = () => {
+    // Gera nova sugestão (pode ser outra resposta estática)
+    setResponse(`🌟 Nova sugestão:\n• Vestido midi floral\n• Sandália nude\n• Bolsa pequena transversal\n\n☁️ Clima: 24°C, parcialmente nublado`);
+  };
+
+  const handleSaveLook = () => {
+    console.log("Look salvo:", response);
+    alert("Look salvo com sucesso!");
+  };
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <View style={styles.container}>
-          <Text style={styles.title}>Explore Novos Looks</Text>
-          
+          <Text style={styles.title}>Looksy: Moda Inteligente</Text>
+          <Text style={styles.subtitle}>Descreva a ocasião para receber uma sugestão:</Text>
+
           <TextInput
-            style={styles.searchInput}
-            placeholder="Busque roupas..."
+            style={styles.input}
+            placeholder="Ex: Preciso de um look para um jantar romântico hoje à noite em SP"
             placeholderTextColor="#B76E79"
-            value={search}
-            onChangeText={setSearch}
+            multiline
+            value={inputText}
+            onChangeText={setInputText}
           />
 
-          <View style={styles.filtersContainer}>
-            <TextInput
-              style={styles.filterInput}
-              placeholder="Marca"
-              placeholderTextColor="#B76E79"
-              value={selectedBrand}
-              onChangeText={setSelectedBrand}
-            />
-            <TextInput
-              style={styles.filterInput}
-              placeholder="Preço Máx (R$)"
-              placeholderTextColor="#B76E79"
-              keyboardType="numeric"
-              value={selectedPrice}
-              onChangeText={setSelectedPrice}
-            />
-          </View>
+          <TouchableOpacity style={styles.button} onPress={handleSuggestion}>
+            <Text style={styles.buttonText}>Sugerir Look</Text>
+          </TouchableOpacity>
 
-          <FlatList
-            data={filteredProducts}
-            keyExtractor={item => item.id}
-            numColumns={2}
-            columnWrapperStyle={styles.rowContainer}
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: isKeyboardVisible ? 20 : 100 }}
-            renderItem={({ item }) => (
-              <View style={styles.productCard}>
-                <Image source={item.image} style={styles.productImage} />
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productBrand}>{item.brand}</Text>
-                <Text style={styles.productPrice}>{item.price}</Text>
+          {response !== '' && (
+            <View style={styles.responseBox}>
+              <ScrollView>
+                <Text style={styles.responseText}>{response}</Text>
+              </ScrollView>
+
+              <View style={styles.actions}>
+                <TouchableOpacity style={styles.secondaryButton} onPress={handleSaveLook}>
+                  <Text style={styles.secondaryButtonText}>Salvar Look</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.secondaryButton} onPress={handleNewSuggestion}>
+                  <Text style={styles.secondaryButtonText}>Gerar Outro Look</Text>
+                </TouchableOpacity>
               </View>
-            )}
-          />
+            </View>
+          )}
         </View>
-      </TouchableWithoutFeedback>
-      {!isKeyboardVisible && <BottomNavBar activeTab="Explorar" style={styles.navbar} />}
+      </KeyboardAvoidingView>
+
+      <BottomNavBar activeTab="Explorar" />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeContainer: { flex: 1, backgroundColor: '#fff', paddingTop: 10 },
-  container: { flex: 1, padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#B76E79', marginBottom: 20, textAlign: 'center' },
-  searchInput: { width: '100%', padding: 10, borderWidth: 1, borderColor: '#B76E79', borderRadius: 10, backgroundColor: '#fff', marginBottom: 10 },
-  filtersContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
-  filterInput: { width: '48%', padding: 10, borderWidth: 1, borderColor: '#B76E79', borderRadius: 10, backgroundColor: '#fff' },
-  rowContainer: { justifyContent: 'space-between' },
-  productCard: { backgroundColor: '#fff', padding: 15, borderRadius: 10, marginBottom: 15, shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.1, shadowRadius: 5, elevation: 5, alignItems: 'center', width: '48%' },
-  productImage: { width: 100, height: 100, borderRadius: 10, marginBottom: 10 },
-  productName: { fontSize: 16, fontWeight: 'bold', color: '#7A3B46', textAlign: 'center' },
-  productBrand: { fontSize: 14, color: '#B76E79', textAlign: 'center' },
-  productPrice: { fontSize: 14, fontWeight: 'bold', color: '#B76E79', textAlign: 'center' },
-  navbar: { position: 'absolute', bottom: 0, width: '100%' },
+  safeContainer: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 20, paddingBottom: 100 },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#B76E79',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 5
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#7A3B46',
+    textAlign: 'center',
+    marginBottom: 20
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#B76E79',
+    borderRadius: 10,
+    padding: 15,
+    backgroundColor: '#fff',
+    color: '#333',
+    fontSize: 16,
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+  button: {
+    backgroundColor: '#B76E79',
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  responseBox: {
+    backgroundColor: '#F8E1E7',
+    borderRadius: 10,
+    padding: 15,
+    marginTop: 20,
+    maxHeight: 300,
+  },
+  responseText: {
+    color: '#7A3B46',
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  secondaryButton: {
+    borderWidth: 1,
+    borderColor: '#B76E79',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#fff',
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  secondaryButtonText: {
+    color: '#B76E79',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
