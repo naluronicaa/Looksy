@@ -18,3 +18,4 @@ export default StyleSheet.create({
     facebookButtonText: { color: '#1877F2', fontSize: 16, fontWeight: 'bold' },
     linkText: { color: '#e8afb7', marginTop: 10, fontSize: 14 },
   });
+

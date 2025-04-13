@@ -15,7 +15,8 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
-import BottomNavBar from '../components/navigation-bar/NavBar'; // ajuste o caminho se necessário
+import BottomNavBar from '../components/navigation-bar/NavBar';
+import LookCard from '../components/looks/alllooks';
 
 const looksData = [
   { id: '1', title: 'Look Executivo', description: 'Para reuniões formais.', img: require('../../assets/clothes-placeholder.jpg') },
@@ -60,7 +61,7 @@ export default function AllLooksScreen() {
     <SafeAreaView style={styles.safeArea}>
       {/* Cabeçalho */}
       <View style={styles.header}>
-        <Text style={styles.title}>📋 Todos os Looks</Text>
+        <Text style={styles.title}>Todos os Looks</Text>
         <TouchableOpacity style={styles.uploadButton} onPress={handlePickImage}>
           <Ionicons name="camera-outline" size={22} color="#fff" />
           <Text style={styles.uploadText}>Enviar Look</Text>
@@ -84,23 +85,17 @@ export default function AllLooksScreen() {
         </View>
       )}
 
-      {/* Lista de Looks em grade 2 colunas */}
+      {/* Lista de Looks */}
       <FlatList
         data={filteredLooks}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.gridContainer}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image source={item.img} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>{item.title}</Text>
-            <Text style={styles.cardDesc}>{item.description}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <LookCard look={item} />}
       />
 
-      {/* Bottom Navbar */}
+
       <BottomNavBar activeTab="Looks" />
     </SafeAreaView>
   );
@@ -199,4 +194,48 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 4,
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalImage: {
+    width: '100%',
+    aspectRatio: 1, // mantém imagem quadrada
+    borderRadius: 10,
+    marginBottom: 15,
+    resizeMode: 'cover', // ou 'contain' se quiser mostrar tudo
+  },  
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#7A3B46',
+    textAlign: 'center',
+  },
+  modalDesc: {
+    fontSize: 14,
+    color: '#7A3B46',
+    marginVertical: 10,
+    textAlign: 'center',
+  },
+  modalCloseButton: {
+    marginTop: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#B76E79',
+  },
+  modalCloseText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  
 });

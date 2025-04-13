@@ -108,6 +108,50 @@ export default StyleSheet.create({
     width: '100%',
     textAlign: 'center',
   },
+  settingDescription: {
+    fontSize: 13,
+    color: '#7A3B46',
+    marginTop: 5,
+    marginBottom: 8,
+  },
+  timeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8E1E7',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
+    marginTop: 8,
+  },
+  timeText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#B76E79',
+    fontWeight: 'bold',
+  },
+  settingDescription: {
+    fontSize: 13,
+    color: '#7A3B46',
+    marginTop: 5,
+    marginBottom: 8,
+  },
+  switchRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  timeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8E1E7',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginTop: 8,
+  },
+  
 });
 
 

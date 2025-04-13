@@ -36,7 +36,7 @@ export default function ExploreScreen() {
     <SafeAreaView style={styles.safeContainer}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <View style={styles.container}>
-          <Text style={styles.title}>Looksy: Moda Inteligente</Text>
+          <Text style={styles.title}>Sky: Sua IA estilista</Text>
           <Text style={styles.subtitle}>Descreva a ocasião para receber uma sugestão:</Text>
 
           <TextInput

@@ -1,44 +1,48 @@
-// src/screens/RecentLooksCarousel.js
+// src/components/looks/RecentLooksCarousel.js
+
 import React from 'react';
-import { 
-  ScrollView, 
-  Text, 
-  TouchableOpacity, 
-  Image, 
-  StyleSheet, 
-  SafeAreaView 
+import {
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  View,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler'; // 👈 aqui tá o segredo!
 
 const looksData = [
-  { id: '1', title: 'Look Social Elegante', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '2', title: 'Look Casual de Primavera', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '3', title: 'Look para Festa à Noite', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '4', title: 'Look de Trabalho Confortável', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '5', title: 'Look Estilo Streetwear', img: require('../../assets/clothes-placeholder.jpg') },
+  { id: '1', title: 'Look Social Elegante', img: require('../../../assets/clothes-placeholder.jpg') },
+  { id: '2', title: 'Look Casual de Primavera', img: require('../../../assets/clothes-placeholder.jpg') },
+  { id: '3', title: 'Look para Festa à Noite', img: require('../../../assets/clothes-placeholder.jpg') },
+  { id: '4', title: 'Look de Trabalho Confortável', img: require('../../../assets/clothes-placeholder.jpg') },
+  { id: '5', title: 'Look Estilo Streetwear', img: require('../../../assets/clothes-placeholder.jpg') },
 ];
 
-export default function RecentLooksCarousel() {
+export default function RecentLooksCarousel({ onSelectLook }) {
   return (
-    <SafeAreaView style={styles.carouselWrapper}>
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={true} 
+    <View style={styles.carouselWrapper}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.carouselContent}
       >
         {looksData.map((item) => (
-          <TouchableOpacity key={item.id} style={styles.card}>
+          <TouchableOpacity
+            key={item.id}
+            style={styles.card}
+            onPress={() => onSelectLook(item)}
+          >
             <Image source={item.img} style={styles.cardImage} />
             <Text style={styles.cardText}>{item.title}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   carouselWrapper: {
-    height: 250, // Altura fixa para forçar o espaço de rolagem
     backgroundColor: '#fff',
     paddingVertical: 10,
   },
@@ -48,23 +52,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: '#F8E1E7',   // Rosa clarinho
-    paddingVertical: 15,
-    paddingHorizontal: 10,
+    backgroundColor: '#F8E1E7',
+    padding: 12,                  // padding fixo
     borderRadius: 12,
-    marginRight: 15,
-    width: 170,                 // Largura maior para forçar a rolagem
+    marginRight: 16,
+    width: 150,                  // largura fixa
     alignItems: 'center',
-    // Sombra (para iOS e Android)
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 4,
   },
   cardImage: {
     width: 110,
-    height: 110,
+    height: 160,
     borderRadius: 10,
     marginBottom: 8,
     resizeMode: 'cover',

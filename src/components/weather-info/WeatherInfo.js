@@ -1,78 +1,77 @@
+// src/components/ClimaInfo.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Platform,
+} from 'react-native';
 import * as Location from 'expo-location';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getWeatherByCoords } from '../../services/weatherServices';
-
-const CACHE_KEY = 'weather_cache';
-const CACHE_EXPIRATION_MINUTES = 60;
+import { Ionicons } from '@expo/vector-icons';
 
 export default function WeatherInfo() {
   const [loading, setLoading] = useState(true);
-  const [temperature, setTemperature] = useState(null);
   const [error, setError] = useState('');
-  const [periodo, setPeriodo] = useState('');
-  const [estacao, setEstacao] = useState('');
-  const [cidade, setCidade] = useState('');
+  const [data, setData] = useState({
+    cidade: '',
+    temperatura: null,
+    estacao: '',
+    periodo: '',
+    dataFormatada: '',
+  });
 
   useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        const now = new Date();
-
-        const cached = await AsyncStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const { data, timestamp } = JSON.parse(cached);
-          const lastFetch = new Date(timestamp);
-          const minutesPassed = (now - lastFetch) / 1000 / 60;
-
-          if (minutesPassed < CACHE_EXPIRATION_MINUTES) {
-            applyWeather(data);
-            setLoading(false);
-            return;
-          }
-        }
-
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setError('Permissão de localização negada');
-          setLoading(false);
-          return;
-        }
-
-        const location = await Location.getCurrentPositionAsync({});
-        const { latitude, longitude } = location.coords;
-
-        const clima = await getWeatherByCoords(latitude, longitude);
-
-        await AsyncStorage.setItem(
-          CACHE_KEY,
-          JSON.stringify({ data: clima, timestamp: now.toISOString() })
-        );
-
-        applyWeather(clima);
-      } catch (err) {
-        setError('Erro ao obter clima.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWeather();
+    formatarData();
+    buscarClima();
   }, []);
 
-  const applyWeather = (clima) => {
-    setTemperature(clima.temp);
-    setCidade(clima.city_name);
+  const formatarData = () => {
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.toLocaleString('pt-BR', { month: 'long' });
+    const weekday = now.toLocaleString('pt-BR', { weekday: 'long' });
 
-    const hora = new Date().getHours();
-    setPeriodo(hora < 12 ? 'manhã' : hora < 18 ? 'tarde' : 'noite');
-
-    setEstacao(getEstacao(new Date()));
+    setData((prev) => ({
+      ...prev,
+      dataFormatada: `${weekday}, ${day} de ${month}`,
+    }));
   };
 
-  const getEstacao = (date) => {
+  const buscarClima = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setError('Permissão de localização negada');
+        setLoading(false);
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      const clima = await getWeatherByCoords(latitude, longitude);
+
+      const hora = new Date().getHours();
+      const periodo = hora < 12 ? 'manhã' : hora < 18 ? 'tarde' : 'noite';
+      const estacao = definirEstacao(new Date());
+
+      setData((prev) => ({
+        ...prev,
+        cidade: clima.city_name,
+        temperatura: clima.temp,
+        periodo,
+        estacao,
+      }));
+    } catch (err) {
+      console.error(err);
+      setError('Erro ao obter clima');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const definirEstacao = (date) => {
     const mes = date.getMonth() + 1;
     const dia = date.getDate();
 
@@ -82,19 +81,51 @@ export default function WeatherInfo() {
     return 'primavera';
   };
 
-  if (loading) return <ActivityIndicator size="large" color="#B76E79" />;
+  if (loading) return <ActivityIndicator size="small" color="#B76E79" style={{ marginTop: 5 }} />;
   if (error) return <Text style={styles.errorText}>{error}</Text>;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>📍 {cidade}</Text>
-      <Text style={styles.text}>🌡️ {temperature}°C | {estacao}, {periodo}</Text>
+      <View style={styles.infoRow}>
+        <Ionicons name="calendar-outline" size={18} color="#B76E79" style={styles.icon} />
+        <Text style={styles.text}>{data.dataFormatada}</Text>
+      </View>
+  
+      <View style={styles.infoRow}>
+        <Ionicons name="location-outline" size={18} color="#B76E79" style={styles.icon} />
+        <Text style={styles.text}>{data.cidade}</Text>
+      </View>
+  
+      <View style={styles.infoRow}>
+        <Ionicons name="thermometer-outline" size={18} color="#B76E79" style={styles.icon} />
+        <Text style={styles.text}>
+          {data.temperatura}°C | {data.estacao}, {data.periodo}
+        </Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { marginBottom: 10, paddingHorizontal: 20 },
-  text: { fontSize: 14, color: '#7A3B46' },
-  errorText: { color: 'red', fontSize: 14, padding: 10 },
+  container: {
+    paddingTop: Platform.OS === 'android' ? 0 : 5,
+  },
+  text: {
+    fontSize: 14,
+    color: '#7A3B46',
+    marginBottom: 4,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  
+  icon: {
+    marginRight: 6,
+  },  
 });
