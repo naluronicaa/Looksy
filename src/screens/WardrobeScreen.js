@@ -190,8 +190,16 @@ export default function WardrobeScreen() {
             {subtipoSelecionado && <Text style={styles.summaryText}>Tipo: {subtipoSelecionado}</Text>}
             {descricao !== '' && <Text style={styles.summaryText}>📝 {descricao}</Text>}
           </View>
-        </ScrollView>
 
+          {/* Botão de salvar */}
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => Alert.alert('Peça salva com sucesso!')}
+          >
+            <Text style={styles.saveButtonText}>Salvar</Text>
+          </TouchableOpacity>
+
+        </ScrollView>
         {!keyboardVisible && <BottomNavBar activeTab="Roupas" />}
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -304,6 +312,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     marginBottom: 15,
+  },
+  saveButton: {
+    backgroundColor: '#B76E79',
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   
 });
