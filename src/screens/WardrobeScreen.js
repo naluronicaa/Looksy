@@ -32,6 +32,15 @@ export default function WardrobeScreen() {
   const [subtipoSelecionado, setSubtipoSelecionado] = useState('');
   const [descricao, setDescricao] = useState('');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [usosSelecionados, setUsosSelecionados] = useState([]);
+
+  const toggleUso = (item) => {
+    if (usosSelecionados.includes(item)) {
+      setUsosSelecionados(usosSelecionados.filter((u) => u !== item));
+    } else {
+      setUsosSelecionados([...usosSelecionados, item]);
+    }
+  };
 
   const handleCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -39,18 +48,18 @@ export default function WardrobeScreen() {
       Alert.alert('Permissão negada', 'Você precisa permitir o uso da câmera.');
       return;
     }
-  
+
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 0.7,
     });
-  
+
     if (!result.canceled && result.assets.length > 0) {
       setFotoUri(result.assets[0].uri);
       Alert.alert('Foto tirada com sucesso!');
     }
   };
-  
+
 
   useEffect(() => {
     const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
@@ -172,6 +181,38 @@ export default function WardrobeScreen() {
             </View>
           ))}
 
+          <Text style={styles.summaryTitle}>Onde você costuma usar essa peça?</Text>
+          <View style={styles.checkboxGroup}>
+            {[
+              'Trabalho',
+              'Passeio de dia',
+              'Esportes',
+              'Eventos formais',
+              'Encontros',
+              'Balada',
+              'Férias',
+              'Casa',
+              'Compras',
+              'Escola/Faculdade',
+              'Outros',
+            ].map((item) => (
+              <TouchableOpacity
+                key={item}
+                style={selectedUsos.includes(item) ? styles.checkboxItemActive : styles.checkboxItem}
+                onPress={() => toggleUso(item)}
+              >
+                <Text
+                  style={
+                    selectedUsos.includes(item) ? styles.checkboxTextActive : styles.checkboxText
+                  }
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+
           {/* Descrição personalizada */}
           <TextInput
             style={styles.input}
@@ -189,6 +230,9 @@ export default function WardrobeScreen() {
             {categoriaSelecionada && <Text style={styles.summaryText}>Categoria: {categoriaSelecionada}</Text>}
             {subtipoSelecionado && <Text style={styles.summaryText}>Tipo: {subtipoSelecionado}</Text>}
             {descricao !== '' && <Text style={styles.summaryText}>📝 {descricao}</Text>}
+            {selectedUsos.length > 0 && (
+              <Text style={styles.summaryText}>📍 Usos: {selectedUsos.join(', ')}</Text>
+            )}
           </View>
 
           {/* Botão de salvar */}
@@ -215,7 +259,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingBottom: 60, // garante que o conteúdo não grude na navbar
-  },  
+  },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -242,7 +286,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     resizeMode: 'cover',
-  },  
+  },
   categoryBlock: {
     marginBottom: 20,
   },
@@ -325,5 +369,35 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  
+  checkboxGroup: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 20,
+  },
+  checkboxItem: {
+    backgroundColor: '#F8E1E7',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 10,
+  },
+  checkboxItemActive: {
+    backgroundColor: '#B76E79',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 10,
+  },
+  checkboxText: {
+    color: '#B76E79',
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
+  checkboxTextActive: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
 });
