@@ -32,6 +32,7 @@ Looksy é um aplicativo React Native que te ajuda a montar looks personalizados 
 
 ## 🔧 Estrutura de pastas
 
+<pre>
 src/
 ├── assets/ # Imagens, ícones e ilustrações
 ├── components/ # Componentes reutilizáveis (NavBar, LookCard, etc.)
@@ -39,6 +40,7 @@ src/
 ├── screens/ # Telas principais (Home, Explore, Form, etc.)
 ├── services/ # Serviços de API (clima, back-end Flask)
 └── styles/ # Arquivos de estilos separados
+</pre>
 
 ---
 
