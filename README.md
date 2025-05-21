@@ -1,5 +1,3 @@
-Copy
-Edit
 # 👗 Looksy – Moda com Inteligência e Personalização
 
 Looksy é um aplicativo React Native que te ajuda a montar looks personalizados com base no seu estilo, clima, ocasião e preferências. Com uma interface clean, modo escuro, sugestões da IA "Sky", e integração com fotos e categorias, Looksy é sua stylist digital de bolso. 💅✨
