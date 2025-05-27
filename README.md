@@ -81,6 +81,6 @@ Simulações de respostas de IA e clima feitas via dados mockados
 ---
 
 📝 Licença
-Este projeto é para fins acadêmicos e não possui fins comerciais. Sinta-se livre para usar como referência!
+Este projeto é para fins acadêmicos.
 
 ---
