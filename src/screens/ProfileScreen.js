@@ -1,3 +1,4 @@
+// src/screens/ProfileScreen.js
 import React, { useState } from 'react';
 import {
   View,
@@ -7,7 +8,7 @@ import {
   StyleSheet,
   TextInput,
   Modal,
-  Switch,
+  Alert,
 } from 'react-native';
 import BottomNavBar from '../components/navigation-bar/NavBar';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,26 +17,64 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import { useUsuario } from '../contexts/UserContext';
+import {
+  atualizarUsuario,
+  trocarSenha,
+} from '../services/usuarioService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const { usuario, logout } = useUsuario();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [modalNotificationVisible, setModalNotificationVisible] = useState(false);
   const [modalPasswordVisible, setModalPasswordVisible] = useState(false);
 
-  const [username, setUsername] = useState('Nome do Usuário');
-  const [email, setEmail] = useState('usuario@email.com');
-  const [newUsername, setNewUsername] = useState(username);
-  const [newEmail, setNewEmail] = useState(email);
+  const [newUsername, setNewUsername] = useState(usuario?.nome || '');
+  const [newEmail, setNewEmail] = useState(usuario?.email || '');
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
   const [notificationTime, setNotificationTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-  const [consentAccepted, setConsentAccepted] = useState(false);
 
-  const saveProfile = () => {
-    setUsername(newUsername);
-    setEmail(newEmail);
-    setModalVisible(false);
+  const saveProfile = async () => {
+    try {
+      await atualizarUsuario(usuario.id, newUsername, newEmail);
+      Alert.alert('Perfil atualizado com sucesso!');
+      setModalVisible(false);
+    } catch (error) {
+      Alert.alert('Erro ao atualizar perfil', error.response?.data?.message || error.message);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmNewPassword) {
+      Alert.alert('Erro', 'As senhas não coincidem.');
+      return;
+    }
+
+    try {
+      await trocarSenha(usuario.id, currentPassword, newPassword);
+      Alert.alert('Senha atualizada com sucesso!');
+      setModalPasswordVisible(false);
+    } catch (error) {
+      Alert.alert('Erro ao trocar senha', error.response?.data?.message || error.message);
+    }
+  };
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token');
+    logout(); // limpa contexto
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   return (
@@ -47,8 +86,8 @@ export default function ProfileScreen() {
 
         <View style={styles.profileContainer}>
           <Image source={require('../../assets/profile-placeholder.jpg')} style={styles.profileImage} />
-          <Text style={styles.username}>{username}</Text>
-          <Text style={styles.email}>{email}</Text>
+          <Text style={styles.username}>{usuario?.nome}</Text>
+          <Text style={styles.email}>{usuario?.email}</Text>
         </View>
 
         <View style={styles.optionsContainer}>
@@ -77,7 +116,7 @@ export default function ProfileScreen() {
             <Text style={styles.optionText}>Configurações</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
             <Ionicons name="log-out-outline" size={24} color="#B76E79" />
             <Text style={styles.optionText}>Sair</Text>
           </TouchableOpacity>
@@ -88,18 +127,8 @@ export default function ProfileScreen() {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Editar Perfil</Text>
-              <TextInput
-                style={styles.input}
-                value={newUsername}
-                onChangeText={setNewUsername}
-                placeholder="Nome"
-              />
-              <TextInput
-                style={styles.input}
-                value={newEmail}
-                onChangeText={setNewEmail}
-                placeholder="E-mail"
-              />
+              <TextInput style={styles.input} value={newUsername} onChangeText={setNewUsername} placeholder="Nome" />
+              <TextInput style={styles.input} value={newEmail} onChangeText={setNewEmail} placeholder="E-mail" />
               <TouchableOpacity style={styles.saveButton} onPress={saveProfile}>
                 <Text style={styles.buttonText}>Salvar</Text>
               </TouchableOpacity>
@@ -121,6 +150,39 @@ export default function ProfileScreen() {
               <TouchableOpacity onPress={() => { setSettingsVisible(false); setModalPasswordVisible(true); }}>
                 <Text style={styles.settingOption}>Trocar Senha</Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionItem}
+                onPress={() => {
+                  Alert.alert(
+                    'Excluir conta',
+                    'Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita.',
+                    [
+                      { text: 'Cancelar', style: 'cancel' },
+                      {
+                        text: 'Deletar',
+                        style: 'destructive',
+                        onPress: async () => {
+                          try {
+                            await deletarUsuario(usuario.id);
+                            await AsyncStorage.removeItem('token');
+                            logout();
+                            navigation.reset({
+                              index: 0,
+                              routes: [{ name: 'Login' }],
+                            });
+                          } catch (error) {
+                            Alert.alert('Erro ao deletar', error.response?.data?.message || error.message);
+                          }
+                        },
+                      },
+                    ]
+                  );
+                }}
+              >
+                <Ionicons name="trash-outline" size={24} color="#B76E79" />
+                <Text style={styles.optionText}>Deletar Conta</Text>
+              </TouchableOpacity>
+
               <TouchableOpacity onPress={() => setSettingsVisible(false)}>
                 <Text style={styles.cancelText}>Fechar</Text>
               </TouchableOpacity>
@@ -132,10 +194,10 @@ export default function ProfileScreen() {
         <Modal visible={modalNotificationVisible} animationType="slide" transparent>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Horário de Notificação</Text>
-            <Text style={styles.settingDescription}>
-              Marque um horário para poder consultar a Sky, sua IA estilista personalizada!
-            </Text>
+              <Text style={styles.modalTitle}>Horário de Notificação</Text>
+              <Text style={styles.settingDescription}>
+                Marque um horário para poder consultar a Sky, sua IA estilista personalizada!
+              </Text>
 
               <TouchableOpacity style={styles.timeButton} onPress={() => setShowPicker(true)}>
                 <Ionicons name="time-outline" size={18} color="#B76E79" />
@@ -144,6 +206,7 @@ export default function ProfileScreen() {
                   {notificationTime.getMinutes().toString().padStart(2, '0')}
                 </Text>
               </TouchableOpacity>
+
               {showPicker && (
                 <DateTimePicker
                   value={notificationTime}
@@ -155,6 +218,7 @@ export default function ProfileScreen() {
                   }}
                 />
               )}
+
               <TouchableOpacity onPress={() => setModalNotificationVisible(false)}>
                 <Text style={styles.cancelText}>Fechar</Text>
               </TouchableOpacity>
@@ -167,13 +231,28 @@ export default function ProfileScreen() {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Alterar Senha</Text>
-              <TextInput style={styles.input} placeholder="Senha atual" secureTextEntry />
-              <TextInput style={styles.input} placeholder="Nova senha" secureTextEntry />
-              <TextInput style={styles.input} placeholder="Confirmar nova senha" secureTextEntry />
-              <TouchableOpacity style={styles.saveButton} onPress={() => {
-                alert('Senha alterada com sucesso!');
-                setModalPasswordVisible(false);
-              }}>
+              <TextInput
+                style={styles.input}
+                placeholder="Senha atual"
+                secureTextEntry
+                value={currentPassword}
+                onChangeText={setCurrentPassword}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Nova senha"
+                secureTextEntry
+                value={newPassword}
+                onChangeText={setNewPassword}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Confirmar nova senha"
+                secureTextEntry
+                value={confirmNewPassword}
+                onChangeText={setConfirmNewPassword}
+              />
+              <TouchableOpacity style={styles.saveButton} onPress={handleChangePassword}>
                 <Text style={styles.buttonText}>Salvar</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setModalPasswordVisible(false)}>
