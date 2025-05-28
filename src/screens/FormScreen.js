@@ -1,4 +1,4 @@
-// Novo FormScreen como carrossel de perguntas
+// src/screens/FormScreen.js
 import React, { useState } from 'react';
 import {
   View,
@@ -11,8 +11,9 @@ import {
   Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { useUsuario } from '../contexts/UserContext';
+import { salvarOuAtualizarQuestionario } from '../services/questionarioService';
 
 const questionImages = {
   '1': require('../../assets/q1.jpg'),
@@ -42,18 +43,28 @@ const questions = [
 
 export default function FormScreen() {
   const navigation = useNavigation();
+  const { usuario } = useUsuario();
+
   const [step, setStep] = useState(-1); // -1 = tela inicial
   const [answers, setAnswers] = useState({});
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (step < questions.length - 1) {
       setStep(step + 1);
     } else {
-      AsyncStorage.setItem('formAnswers', JSON.stringify(answers))
-        .then(() => {
-          Alert.alert('Sucesso!', 'Respostas salvas com sucesso!');
-          navigation.navigate('Home');
-        });
+      try {
+        // Prepara objeto com todas as respostas
+        const dadosParaAPI = {
+          usuario_id: usuario.id,
+          respostas: answers
+        };
+
+        await salvarOuAtualizarQuestionario(dadosParaAPI);
+        Alert.alert('Sucesso!', 'Respostas salvas com sucesso!');
+        navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+      } catch (err) {
+        Alert.alert('Erro ao salvar formulário', err.response?.data?.message || err.message);
+      }
     }
   };
 
@@ -81,7 +92,9 @@ export default function FormScreen() {
           <>
             <Image source={require('../../assets/Better.jpg')} style={styles.questionImage} />
             <Text style={styles.title}>Vamos te conhecer melhor!</Text>
-            <Text style={styles.subtitle}>Quanto mais detalhes puder descrever, melhor a Sky (IA) poderá te ajudar!</Text>
+            <Text style={styles.subtitle}>
+              Quanto mais detalhes puder descrever, melhor a Sky (IA) poderá te ajudar!
+            </Text>
             <TouchableOpacity style={styles.button} onPress={() => setStep(0)}>
               <Text style={styles.buttonText}>Começar Questionário</Text>
             </TouchableOpacity>
@@ -106,7 +119,9 @@ export default function FormScreen() {
                 <Text style={styles.backText}>Voltar</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleContinue} style={styles.button}>
-                <Text style={styles.buttonText}>{step === questions.length - 1 ? 'Finalizar' : 'Continuar'}</Text>
+                <Text style={styles.buttonText}>
+                  {step === questions.length - 1 ? 'Finalizar' : 'Continuar'}
+                </Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity onPress={handleSkip} style={styles.skipBtnBottom}>
@@ -136,11 +151,40 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     textAlign: 'center'
   },
-  question: { fontSize: 18, fontWeight: 'bold', color: '#7A3B46', marginBottom: 12, textAlign: 'center' },
-  input: { width: '100%', padding: 12, borderWidth: 1, borderColor: '#B76E79', borderRadius: 10, backgroundColor: '#fff', marginBottom: 15 },
-  button: { backgroundColor: '#B76E79', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 10, alignItems: 'center' },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  actions: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginTop: 10 },
+  question: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#7A3B46',
+    marginBottom: 12,
+    textAlign: 'center'
+  },
+  input: {
+    width: '100%',
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#B76E79',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    marginBottom: 15
+  },
+  button: {
+    backgroundColor: '#B76E79',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 10
+  },
   backText: {
     color: '#B76E79',
     fontSize: 14,
@@ -148,12 +192,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     backgroundColor: '#F8E1E7',
-    borderRadius: 10,
-    overflow: 'hidden'
+    borderRadius: 10
   },
   skipBtn: { marginTop: 25, flexDirection: 'row', alignItems: 'center' },
   skipBtnBottom: { marginTop: 30, flexDirection: 'row', alignItems: 'center' },
   skipText: { color: '#B76E79', fontSize: 14, marginLeft: 6, fontWeight: 'bold' },
   questionImage: { width: 200, height: 200, borderRadius: 10, marginBottom: 15, resizeMode: 'cover' },
 });
-
