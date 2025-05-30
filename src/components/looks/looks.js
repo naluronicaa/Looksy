@@ -1,24 +1,41 @@
 // src/components/looks/RecentLooksCarousel.js
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
   Image,
   StyleSheet,
   View,
+  Alert,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler'; // 👈 aqui tá o segredo!
-
-const looksData = [
-  { id: '1', title: 'Look Social Elegante', img: require('../../../assets/clothes-placeholder.jpg') },
-  { id: '2', title: 'Look Casual de Primavera', img: require('../../../assets/clothes-placeholder.jpg') },
-  { id: '3', title: 'Look para Festa à Noite', img: require('../../../assets/clothes-placeholder.jpg') },
-  { id: '4', title: 'Look de Trabalho Confortável', img: require('../../../assets/clothes-placeholder.jpg') },
-  { id: '5', title: 'Look Estilo Streetwear', img: require('../../../assets/clothes-placeholder.jpg') },
-];
+import { ScrollView } from 'react-native-gesture-handler';
+import { listarLooksRecentes } from '../../services/looksService';
 
 export default function RecentLooksCarousel({ onSelectLook }) {
+  const [looks, setLooks] = useState([]);
+
+  const carregarLooksRecentes = async () => {
+    try {
+      const data = await listarLooksRecentes();
+      setLooks(data);
+    } catch (err) {
+      Alert.alert('Erro ao carregar looks recentes', err.response?.data?.message || err.message);
+    }
+  };
+
+  useEffect(() => {
+    carregarLooksRecentes();
+  }, []);
+
+  if (!looks.length) {
+    return (
+      <View style={styles.carouselWrapper}>
+        <Text style={styles.emptyText}>Você ainda não cadastrou looks recentes.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.carouselWrapper}>
       <ScrollView
@@ -26,14 +43,21 @@ export default function RecentLooksCarousel({ onSelectLook }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.carouselContent}
       >
-        {looksData.map((item) => (
+        {looks.map((item) => (
           <TouchableOpacity
             key={item.id}
             style={styles.card}
-            onPress={() => onSelectLook(item)}
+            onPress={() => onSelectLook?.(item)}
           >
-            <Image source={item.img} style={styles.cardImage} />
-            <Text style={styles.cardText}>{item.title}</Text>
+            <Image
+              source={
+                item.imagem_uri?.startsWith('file')
+                  ? { uri: item.imagem_uri }
+                  : require('../../../assets/clothes-placeholder.jpg')
+              }
+              style={styles.cardImage}
+            />
+            <Text style={styles.cardText}>{item.titulo}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -53,10 +77,10 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#F8E1E7',
-    padding: 12,                  // padding fixo
+    padding: 12,
     borderRadius: 12,
     marginRight: 16,
-    width: 150,                  // largura fixa
+    width: 150,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -76,5 +100,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#7A3B46',
     textAlign: 'center',
+  },
+  emptyText: {
+    color: '#7A3B46',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    fontStyle: 'italic',
   },
 });

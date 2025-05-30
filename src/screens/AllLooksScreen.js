@@ -1,5 +1,4 @@
-// src/screens/AllLooksScreen.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,49 +11,77 @@ import {
   Platform,
   Alert,
   Dimensions,
+  Modal,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import BottomNavBar from '../components/navigation-bar/NavBar';
 import LookCard from '../components/looks/alllooks';
-
-const looksData = [
-  { id: '1', title: 'Look Executivo', description: 'Para reuniões formais.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '2', title: 'Look Verão Casual', description: 'Fresco e estiloso.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '3', title: 'Look Balada', description: 'Para arrasar à noite.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '4', title: 'Look Confortável', description: 'Dia a dia com estilo.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '5', title: 'Look Criativo', description: 'Cheio de atitude.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '6', title: 'Look Esportivo', description: 'Chic e prático.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '7', title: 'Look Festa Dia', description: 'Elegância suave.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '8', title: 'Look Streetwear', description: 'Autêntico e urbano.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '9', title: 'Look Romântico', description: 'Delicado e fofo.', img: require('../../assets/clothes-placeholder.jpg') },
-  { id: '10', title: 'Look Fashion Week', description: 'Para brilhar nas passarelas.', img: require('../../assets/clothes-placeholder.jpg') },
-];
+import { listarLooks, cadastrarLook } from '../services/looksService';
 
 export default function AllLooksScreen() {
   const [search, setSearch] = useState('');
-  const [uploadedImage, setUploadedImage] = useState(null);
+  const [looks, setLooks] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [imageUri, setImageUri] = useState(null);
+  const [titulo, setTitulo] = useState('');
+  const [descricao, setDescricao] = useState('');
+
+  const carregarLooks = async () => {
+    try {
+      const data = await listarLooks();
+      setLooks(data);
+    } catch (err) {
+      Alert.alert('Erro ao carregar looks', err.response?.data?.message || err.message);
+    }
+  };
+
+  useEffect(() => {
+    carregarLooks();
+  }, []);
+
+  const handleOpenModal = () => {
+    setImageUri(null);
+    setTitulo('');
+    setDescricao('');
+    setModalVisible(true);
+  };
 
   const handlePickImage = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permissionResult.granted) {
-      Alert.alert('Permissão negada', 'Você precisa permitir acesso à câmera.');
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 0.7,
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      setUploadedImage(result.assets[0].uri);
-      Alert.alert('Imagem enviada com sucesso!');
+      setImageUri(result.assets[0].uri);
     }
   };
 
-  const filteredLooks = looksData.filter((look) =>
-    look.title.toLowerCase().includes(search.toLowerCase())
+  const handleEnviarLook = async () => {
+    if (!imageUri || !titulo.trim() || !descricao.trim()) {
+      Alert.alert('Preencha todos os campos e selecione uma imagem.');
+      return;
+    }
+
+    try {
+      const novoLook = {
+        imagem_uri: imageUri,
+        titulo,
+        descricao,
+      };
+
+      await cadastrarLook(novoLook);
+      Alert.alert('Look cadastrado com sucesso!');
+      setModalVisible(false);
+      carregarLooks();
+    } catch (err) {
+      Alert.alert('Erro ao enviar look', err.response?.data?.message || err.message);
+    }
+  };
+
+  const filteredLooks = looks.filter((look) =>
+    look.titulo.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -62,7 +89,7 @@ export default function AllLooksScreen() {
       {/* Cabeçalho */}
       <View style={styles.header}>
         <Text style={styles.title}>Todos os Looks</Text>
-        <TouchableOpacity style={styles.uploadButton} onPress={handlePickImage}>
+        <TouchableOpacity style={styles.uploadButton} onPress={handleOpenModal}>
           <Ionicons name="camera-outline" size={22} color="#fff" />
           <Text style={styles.uploadText}>Enviar Look</Text>
         </TouchableOpacity>
@@ -77,24 +104,62 @@ export default function AllLooksScreen() {
         onChangeText={setSearch}
       />
 
-      {/* Preview da imagem enviada */}
-      {uploadedImage && (
-        <View style={styles.previewContainer}>
-          <Text style={styles.previewLabel}>🖼️ Imagem enviada:</Text>
-          <Image source={{ uri: uploadedImage }} style={styles.previewImage} />
-        </View>
-      )}
-
       {/* Lista de Looks */}
       <FlatList
         data={filteredLooks}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.gridContainer}
-        renderItem={({ item }) => <LookCard look={item} />}
+        renderItem={({ item }) => (
+          <LookCard look={item} onDelete={(deletedId) => {
+            setLooks((prev) => prev.filter((l) => l.id !== deletedId));
+          }} />
+        )}
       />
 
+      {/* Modal Enviar Look */}
+      <Modal visible={modalVisible} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Novo Look</Text>
+
+            <TouchableOpacity style={styles.imagePicker} onPress={handlePickImage}>
+              <Ionicons name="image-outline" size={20} color="#B76E79" />
+              <Text style={styles.pickText}>Selecionar Imagem</Text>
+            </TouchableOpacity>
+
+            {imageUri && (
+              <Image source={{ uri: imageUri }} style={styles.modalImage} />
+            )}
+
+            <TextInput
+              style={styles.input}
+              placeholder="Título do Look"
+              placeholderTextColor="#B76E79"
+              value={titulo}
+              onChangeText={setTitulo}
+            />
+
+            <TextInput
+              style={[styles.input, { height: 80 }]}
+              placeholder="Descrição"
+              placeholderTextColor="#B76E79"
+              value={descricao}
+              onChangeText={setDescricao}
+              multiline
+            />
+
+            <TouchableOpacity style={styles.saveButton} onPress={handleEnviarLook}>
+              <Text style={styles.saveButtonText}>Salvar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text style={styles.cancelText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <BottomNavBar activeTab="Looks" />
     </SafeAreaView>
@@ -146,53 +211,13 @@ const styles = StyleSheet.create({
     color: '#333',
     fontSize: 14,
   },
-  previewContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-  previewLabel: {
-    fontSize: 14,
-    marginBottom: 4,
-    color: '#7A3B46',
-  },
-  previewImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-  },
   gridContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 100, // espaço para navbar
+    paddingBottom: 100,
   },
   row: {
     justifyContent: 'space-between',
     marginBottom: 15,
-  },
-  card: {
-    backgroundColor: '#F8E1E7',
-    width: cardWidth,
-    borderRadius: 10,
-    padding: 10,
-    alignItems: 'center',
-  },
-  cardImage: {
-    width: '100%',
-    height: 100,
-    borderRadius: 8,
-    marginBottom: 8,
-    resizeMode: 'cover',
-  },
-  cardTitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#7A3B46',
-    textAlign: 'center',
-  },
-  cardDesc: {
-    fontSize: 12,
-    color: '#7A3B46',
-    textAlign: 'center',
-    marginTop: 4,
   },
   modalOverlay: {
     flex: 1,
@@ -204,38 +229,57 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
-    width: '80%',
+    width: '85%',
     alignItems: 'center',
   },
-  modalImage: {
-    width: '100%',
-    aspectRatio: 1, // mantém imagem quadrada
-    borderRadius: 10,
-    marginBottom: 15,
-    resizeMode: 'cover', // ou 'contain' se quiser mostrar tudo
-  },  
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#7A3B46',
-    textAlign: 'center',
+    marginBottom: 10,
   },
-  modalDesc: {
+  modalImage: {
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: 10,
+    marginBottom: 10,
+    resizeMode: 'cover',
+  },
+  imagePicker: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  pickText: {
+    marginLeft: 8,
+    color: '#B76E79',
+    fontWeight: 'bold',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#B76E79',
+    borderRadius: 10,
+    padding: 10,
+    width: '100%',
+    marginBottom: 10,
+    color: '#333',
     fontSize: 14,
-    color: '#7A3B46',
-    marginVertical: 10,
-    textAlign: 'center',
   },
-  modalCloseButton: {
-    marginTop: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+  saveButton: {
     backgroundColor: '#B76E79',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 5,
   },
-  modalCloseText: {
+  saveButtonText: {
     color: '#fff',
     fontWeight: 'bold',
   },
-  
+  cancelText: {
+    color: '#B76E79',
+    fontSize: 14,
+    marginTop: 10,
+    fontWeight: 'bold',
+  },
 });

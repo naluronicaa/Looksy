@@ -7,20 +7,49 @@ import {
   Modal,
   Pressable,
   StyleSheet,
+  Alert,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { deletarLook } from '../../services/looksService';
 
-export default function LookCard({ look }) {
+export default function LookCard({ look, onDelete }) {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
+  const handleDelete = async () => {
+    Alert.alert('Excluir Look', 'Tem certeza que deseja excluir este look?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Excluir',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await deletarLook(look.id);
+            closeModal();
+            if (onDelete) onDelete(look.id);
+          } catch (err) {
+            Alert.alert('Erro', err.response?.data?.message || err.message);
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <>
       <TouchableOpacity style={styles.card} onPress={openModal}>
-        <Image source={look.img} style={styles.cardImage} />
-        <Text style={styles.cardTitle}>{look.title}</Text>
-        <Text style={styles.cardDesc}>{look.description}</Text>
+        <Image
+          source={
+            look.imagem_uri?.startsWith('file')
+              ? { uri: look.imagem_uri }
+              : look.img || require('../../assets/clothes-placeholder.jpg')
+          }
+          style={styles.cardImage}
+        />
+        <Text style={styles.cardTitle}>{look.titulo || look.title}</Text>
+        <Text style={styles.cardDesc}>{look.descricao || look.description}</Text>
       </TouchableOpacity>
 
       <Modal
@@ -31,11 +60,24 @@ export default function LookCard({ look }) {
       >
         <Pressable style={styles.modalOverlay} onPress={closeModal}>
           <View style={styles.modalContent}>
-            <Image source={look.img} style={styles.modalImage} />
-            <Text style={styles.modalTitle}>{look.title}</Text>
-            <Text style={styles.modalDesc}>{look.description}</Text>
+            <Image
+              source={
+                look.imagem_uri?.startsWith('file')
+                  ? { uri: look.imagem_uri }
+                  : look.img || require('../../assets/clothes-placeholder.jpg')
+              }
+              style={styles.modalImage}
+            />
+            <Text style={styles.modalTitle}>{look.titulo || look.title}</Text>
+            <Text style={styles.modalDesc}>{look.descricao || look.description}</Text>
+
             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
               <Text style={styles.closeButtonText}>Fechar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+              <Ionicons name="trash-outline" size={18} color="#fff" />
+              <Text style={styles.deleteButtonText}>Excluir</Text>
             </TouchableOpacity>
           </View>
         </Pressable>
@@ -115,5 +157,19 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  deleteButton: {
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#DB3A34',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    marginLeft: 6,
   },
 });

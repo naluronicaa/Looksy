@@ -17,6 +17,8 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import BottomNavBar from '../components/navigation-bar/NavBar';
 import { Ionicons } from '@expo/vector-icons';
+import { cadastrarRoupa } from '../services/clothesService';
+import { useUsuario } from '../contexts/UserContext';
 
 const categorias = {
   'Parte de Cima': ['Camiseta', 'Blusa', 'Casaco', 'Jaqueta'],
@@ -33,6 +35,8 @@ export default function WardrobeScreen() {
   const [descricao, setDescricao] = useState('');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [usosSelecionados, setUsosSelecionados] = useState([]);
+
+  const { usuario } = useUsuario();
 
   const toggleUso = (item) => {
     if (usosSelecionados.includes(item)) {
@@ -60,20 +64,10 @@ export default function WardrobeScreen() {
     }
   };
 
-
-  useEffect(() => {
-    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
-    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
-    return () => {
-      show.remove();
-      hide.remove();
-    };
-  }, []);
-
   const handleImagem = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permissão negada', 'Você precisa permitir o acesso à galeria ou câmera.');
+      Alert.alert('Permissão negada', 'Você precisa permitir o acesso à galeria.');
       return;
     }
 
@@ -102,6 +96,44 @@ export default function WardrobeScreen() {
     setSubtipoSelecionado((prev) => (prev === subtipo ? '' : subtipo));
   };
 
+  const handleSalvar = async () => {
+    if (!fotoUri || !categoriaSelecionada || !subtipoSelecionado || usosSelecionados.length === 0) {
+      Alert.alert('Preencha todos os campos obrigatórios');
+      return;
+    }
+
+    try {
+      const novaRoupa = {
+        foto_uri: fotoUri,
+        categoria: categoriaSelecionada,
+        subtipo: subtipoSelecionado,
+        descricao,
+        usos: usosSelecionados,
+      };
+
+      const res = await cadastrarRoupa(novaRoupa);
+      Alert.alert('Sucesso!', 'Peça salva com sucesso!');
+
+      // Limpa os campos
+      setFotoUri(null);
+      setCategoriaSelecionada(null);
+      setSubtipoSelecionado('');
+      setDescricao('');
+      setUsosSelecionados([]);
+    } catch (error) {
+      Alert.alert('Erro ao salvar roupa', error.response?.data?.message || error.message);
+    }
+  };
+
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -115,7 +147,7 @@ export default function WardrobeScreen() {
         >
           <Text style={styles.title}>Salvar sua Peça de Roupa</Text>
 
-          {/* Botão de imagem */}
+          {/* Botões de imagem */}
           <View style={styles.imageButtonsRow}>
             <TouchableOpacity style={styles.imageButton} onPress={handleImagem}>
               <Ionicons name="image-outline" size={22} color="#fff" />
@@ -128,10 +160,9 @@ export default function WardrobeScreen() {
             </TouchableOpacity>
           </View>
 
-
           {fotoUri && <Image source={{ uri: fotoUri }} style={styles.previewImage} />}
 
-          {/* Categorias */}
+          {/* Categorias e subtipos */}
           {Object.keys(categorias).map((categoria) => (
             <View key={categoria} style={styles.categoryBlock}>
               <TouchableOpacity
@@ -181,6 +212,7 @@ export default function WardrobeScreen() {
             </View>
           ))}
 
+          {/* Usos */}
           <Text style={styles.summaryTitle}>Onde você costuma usar essa peça?</Text>
           <View style={styles.checkboxGroup}>
             {[
@@ -198,12 +230,14 @@ export default function WardrobeScreen() {
             ].map((item) => (
               <TouchableOpacity
                 key={item}
-                style={selectedUsos.includes(item) ? styles.checkboxItemActive : styles.checkboxItem}
+                style={usosSelecionados.includes(item) ? styles.checkboxItemActive : styles.checkboxItem}
                 onPress={() => toggleUso(item)}
               >
                 <Text
                   style={
-                    selectedUsos.includes(item) ? styles.checkboxTextActive : styles.checkboxText
+                    usosSelecionados.includes(item)
+                      ? styles.checkboxTextActive
+                      : styles.checkboxText
                   }
                 >
                   {item}
@@ -212,8 +246,7 @@ export default function WardrobeScreen() {
             ))}
           </View>
 
-
-          {/* Descrição personalizada */}
+          {/* Descrição */}
           <TextInput
             style={styles.input}
             placeholder="Descrição personalizada (ex: Vestido preto justo com brilho)"
@@ -230,20 +263,17 @@ export default function WardrobeScreen() {
             {categoriaSelecionada && <Text style={styles.summaryText}>Categoria: {categoriaSelecionada}</Text>}
             {subtipoSelecionado && <Text style={styles.summaryText}>Tipo: {subtipoSelecionado}</Text>}
             {descricao !== '' && <Text style={styles.summaryText}>📝 {descricao}</Text>}
-            {selectedUsos.length > 0 && (
-              <Text style={styles.summaryText}>📍 Usos: {selectedUsos.join(', ')}</Text>
+            {usosSelecionados.length > 0 && (
+              <Text style={styles.summaryText}>📍 Usos: {usosSelecionados.join(', ')}</Text>
             )}
           </View>
 
-          {/* Botão de salvar */}
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={() => Alert.alert('Peça salva com sucesso!')}
-          >
+          {/* Botão salvar */}
+          <TouchableOpacity style={styles.saveButton} onPress={handleSalvar}>
             <Text style={styles.saveButtonText}>Salvar</Text>
           </TouchableOpacity>
-
         </ScrollView>
+
         {!keyboardVisible && <BottomNavBar activeTab="Roupas" />}
       </KeyboardAvoidingView>
     </SafeAreaView>

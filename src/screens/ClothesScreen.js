@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,35 +10,47 @@ import {
   SafeAreaView,
   Platform,
   Dimensions,
+  Alert,
 } from 'react-native';
 import BottomNavBar from '../components/navigation-bar/NavBar';
-import { Ionicons } from '@expo/vector-icons';
-
-// Exemplo de peças (mock temporário, substitua depois por dados reais do SQLite)
-const clothesData = [
-  {
-    id: '1',
-    foto: require('../../assets/clothes-placeholder.jpg'),
-    categoria: 'Parte de Cima',
-    subtipo: 'Blusa',
-    descricao: 'Blusa rosa com gola alta',
-    usos: ['Trabalho', 'Eventos formais'],
-  },
-  {
-    id: '2',
-    foto: require('../../assets/clothes-placeholder.jpg'),
-    categoria: 'Calçados',
-    subtipo: 'Tênis',
-    descricao: 'Tênis branco casual',
-    usos: ['Passeio de dia', 'Férias'],
-  },
-  // Adicione mais mock data se quiser
-];
+import { listarRoupas, deletarRoupa } from '../services/clothesService';
 
 export default function ClothesScreen() {
   const [search, setSearch] = useState('');
+  const [clothes, setClothes] = useState([]);
 
-  const filteredClothes = clothesData.filter(
+  const carregarRoupas = async () => {
+    try {
+      const data = await listarRoupas();
+      setClothes(data);
+    } catch (err) {
+      Alert.alert('Erro ao carregar roupas', err.response?.data?.message || err.message);
+    }
+  };
+
+  const removerRoupa = async (id) => {
+    Alert.alert('Remover roupa', 'Deseja realmente excluir esta peça?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Excluir',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await deletarRoupa(id);
+            setClothes((prev) => prev.filter((r) => r.id !== id));
+          } catch (err) {
+            Alert.alert('Erro ao excluir', err.response?.data?.message || err.message);
+          }
+        },
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    carregarRoupas();
+  }, []);
+
+  const filteredClothes = clothes.filter(
     (item) =>
       item.categoria.toLowerCase().includes(search.toLowerCase()) ||
       item.subtipo.toLowerCase().includes(search.toLowerCase()) ||
@@ -61,16 +73,26 @@ export default function ClothesScreen() {
 
       <FlatList
         data={filteredClothes}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.gridContainer}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Image source={item.foto} style={styles.cardImage} />
+            <Image
+              source={
+                item.foto_uri?.startsWith('file')
+                  ? { uri: item.foto_uri }
+                  : require('../../assets/clothes-placeholder.jpg')
+              }
+              style={styles.cardImage}
+            />
             <Text style={styles.cardTitle}>{item.subtipo}</Text>
             <Text style={styles.cardDesc}>{item.descricao}</Text>
-            <Text style={styles.cardUsos}>📍 {item.usos.join(', ')}</Text>
+            <Text style={styles.cardUsos}>📍 {item.usos?.join(', ')}</Text>
+            <TouchableOpacity onPress={() => removerRoupa(item.id)}>
+              <Text style={styles.deleteText}>Excluir</Text>
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -147,5 +169,11 @@ const styles = StyleSheet.create({
     color: '#7A3B46',
     textAlign: 'center',
     marginTop: 4,
+  },
+  deleteText: {
+    color: '#B76E79',
+    marginTop: 6,
+    fontSize: 13,
+    fontWeight: 'bold',
   },
 });
