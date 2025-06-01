@@ -53,12 +53,12 @@ export default function App() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Signup" component={SignupScreen} />
             <Stack.Screen name="Form" component={FormScreen} />
-            <Stack.Screen name="Roupas" component={WardrobeScreen} />
+            <Stack.Screen name="Roupas" component={ClothesScreen} />
             <Stack.Screen name="Perfil" component={ProfileScreen} />
             <Stack.Screen name="Explorar" component={ExploreScreen} />
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Looks" component={AllLooksScreen} />
-            <Stack.Screen name="Roupa" component={ClothesScreen} />
+            <Stack.Screen name="Adicionar" component={WardrobeScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserProvider>

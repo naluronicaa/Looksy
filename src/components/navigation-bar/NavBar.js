@@ -11,8 +11,8 @@ export default function BottomNavBar ({ activeTab }) {
   const tabs = [
     { name: 'Home', icon: 'home-outline' },
     { name: 'Looks', icon: 'bookmark-outline' },
-    { name: 'Roupa', icon: 'shirt-outline' },
-    { name: 'Roupas', icon: 'camera-outline' },
+    { name: 'Roupas', icon: 'shirt-outline' },
+    { name: 'Adicionar', icon: 'camera-outline' },
     { name: 'Explorar', icon: 'chatbubble-ellipses-outline' },
     { name: 'Perfil', icon: 'person-outline' },
   ];

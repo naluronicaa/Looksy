@@ -1,11 +1,12 @@
+// api.js
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '@env'; 
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: 'http://52.5.63.244:5000/api', // aqui usamos a variável
 });
 
+// 2) Interceptor para token + logar URL completa
 api.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem('token');

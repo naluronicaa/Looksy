@@ -274,7 +274,7 @@ export default function WardrobeScreen() {
           </TouchableOpacity>
         </ScrollView>
 
-        {!keyboardVisible && <BottomNavBar activeTab="Roupas" />}
+        {!keyboardVisible && <BottomNavBar activeTab="Adicionar" />}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
