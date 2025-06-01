@@ -13,7 +13,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import styles from '../styles/styles';
 
-import { criarUsuario, login as loginAPI, buscarUsuarioPorEmail } from '../services/usuarioService';
+import { criarUsuario, login as loginAPI, buscarUsuarioPorEmail } from '../services/userService';
 import { useUsuario } from '../contexts/UserContext';
 
 export default function SignupScreen() {

@@ -13,7 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useUsuario } from '../contexts/UserContext';
-import { salvarOuAtualizarQuestionario } from '../services/questionarioService';
+import { salvarOuAtualizarQuestionario } from '../services/questionsService';
 
 const questionImages = {
   '1': require('../../assets/q1.jpg'),

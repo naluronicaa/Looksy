@@ -14,7 +14,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import styles from '../styles/styles';
 
-import { login as loginAPI, buscarUsuarioPorEmail } from '../services/usuarioService';
+import { login as loginAPI, buscarUsuarioPorEmail } from '../services/userService';
 import { useUsuario } from '../contexts/UserContext';
 
 export default function LoginScreen() {
@@ -40,8 +40,26 @@ export default function LoginScreen() {
       login({ ...userData, token }); // salva no contexto global
       navigation.navigate('Home');
     } catch (err) {
-      Alert.alert('Erro no login', err.response?.data?.message || err.message);
+      console.error('Erro no login:', err);
+
+      if (err.response) {
+        // A requisição foi feita e o servidor respondeu com um status diferente de 2xx
+        Alert.alert(
+          'Erro no login',
+          `Status: ${err.response.status}\nMensagem: ${err.response.data?.message || 'Erro desconhecido'}`
+        );
+      } else if (err.request) {
+        // A requisição foi feita mas não houve resposta
+        Alert.alert(
+          'Sem resposta do servidor',
+          'Não foi possível se conectar com o servidor. Verifique sua conexão e tente novamente.'
+        );
+      } else {
+        // Outro erro (ex: erro de configuração)
+        Alert.alert('Erro inesperado', err.message || 'Erro desconhecido');
+      }
     }
+
   };
 
   return (

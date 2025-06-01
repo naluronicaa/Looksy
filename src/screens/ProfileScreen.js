@@ -21,7 +21,7 @@ import { useUsuario } from '../contexts/UserContext';
 import {
   atualizarUsuario,
   trocarSenha,
-} from '../services/usuarioService';
+} from '../services/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen() {
