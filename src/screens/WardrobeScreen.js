@@ -24,7 +24,7 @@ const categorias = {
   'Parte de Cima': ['Camiseta', 'Blusa', 'Casaco', 'Jaqueta'],
   'Parte de Baixo': ['Calça', 'Saia', 'Short'],
   'Calçados': ['Tênis', 'Bota', 'Sandália'],
-  'Acessórios': ['Óculos', 'Boné', 'Relógio'],
+  'Acessórios': ['Óculos', 'Chapéu', 'Bolsa', 'Jóias'],
   'Corpo Inteiro': ['Vestido', 'Macacão'],
 };
 

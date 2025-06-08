@@ -9,22 +9,38 @@ import {
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { listarLooksRecentes } from '../../services/looksService';
+import { ActivityIndicator } from 'react-native';
 
 export default function RecentLooksCarousel({ onSelectLook }) {
   const [looks, setLooks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const carregarLooksRecentes = async () => {
     try {
+      setLoading(true);
       const data = await listarLooksRecentes();
       setLooks(data);
     } catch (err) {
       console.log('Erro ao carregar looks recentes', err.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
     }
   };
+
 
   useEffect(() => {
     carregarLooksRecentes();
   }, []);
+
+  if (loading) {
+    return (
+        <View style={styles.carouselWrapper}>
+          <Text style={styles.emptyText}>Carregando seus looks...</Text>
+          <ActivityIndicator size="small" color="#B76E79" />
+        </View>
+    );
+  }
+
 
   if (!looks.length) {
     return (

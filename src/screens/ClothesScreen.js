@@ -11,6 +11,7 @@ import {
   Platform,
   Dimensions,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -20,14 +21,18 @@ import { listarRoupas, deletarRoupa } from '../services/clothesService';
 export default function ClothesScreen() {
   const [search, setSearch] = useState('');
   const [clothes, setClothes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   const carregarRoupas = async () => {
     try {
+      setLoading(true);
       const data = await listarRoupas();
       setClothes(data);
     } catch (err) {
       Alert.alert('Erro ao carregar roupas', err.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,38 +83,44 @@ export default function ClothesScreen() {
         onChangeText={setSearch}
       />
 
-      <FlatList
-        data={filteredClothes}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.gridContainer}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image
-              source={
-                item.foto_uri?.startsWith('file')
-                  ? { uri: item.foto_uri }
-                  : require('../../assets/clothes-placeholder.jpg')
-              }
-              style={styles.cardImage}
-            />
-            <Text style={styles.cardTitle}>{item.subtipo}</Text>
-            <Text style={styles.cardDesc}>{item.descricao}</Text>
-            <Text style={styles.cardUsos}>📍 {item.usos?.join(', ')}</Text>
-            <TouchableOpacity onPress={() => removerRoupa(item.id)}>
-              <Text style={styles.deleteText}>Excluir</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        ListEmptyComponent={
-          <View style={{ padding: 20, alignItems: 'center' }}>
-            <Text style={styles.emptyText}>
-              Você ainda não possui nenhum look salvo!
-            </Text>
-          </View>
-        }
-      />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#B76E79" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredClothes}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.gridContainer}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image
+                source={
+                  item.foto_uri?.startsWith('file')
+                    ? { uri: item.foto_uri }
+                    : require('../../assets/clothes-placeholder.jpg')
+                }
+                style={styles.cardImage}
+              />
+              <Text style={styles.cardTitle}>{item.subtipo}</Text>
+              <Text style={styles.cardDesc}>{item.descricao}</Text>
+              <Text style={styles.cardUsos}>📍 {item.usos?.join(', ')}</Text>
+              <TouchableOpacity onPress={() => removerRoupa(item.id)}>
+                <Text style={styles.deleteText}>Excluir</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          ListEmptyComponent={
+            <View style={{ padding: 20, alignItems: 'center' }}>
+              <Text style={styles.emptyText}>
+                Você ainda não possui nenhuma roupa salva!
+              </Text>
+            </View>
+          }
+        />
+      )}
 
       <BottomNavBar activeTab="Roupas" />
     </SafeAreaView>
@@ -125,7 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? 35 : 10,
   },
- header: {
+  header: {
     flexDirection: 'row',
     paddingHorizontal: 20,
     alignItems: 'center',
@@ -144,7 +155,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
-  }, uploadText: {
+  },
+  uploadText: {
     color: '#fff',
     marginLeft: 6,
     fontWeight: 'bold',
@@ -212,5 +224,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     fontStyle: 'italic',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -12,6 +12,7 @@ import {
   Alert,
   Dimensions,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,17 +24,23 @@ import { useUsuario } from '../contexts/UserContext';
 export default function AllLooksScreen() {
   const [search, setSearch] = useState('');
   const [looks, setLooks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [imageUri, setImageUri] = useState(null);
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
 
+  const { usuario } = useUsuario();
+
   const carregarLooks = async () => {
     try {
+      setLoading(true);
       const data = await listarLooks();
       setLooks(data);
     } catch (err) {
       console.log('Erro ao carregar looks', err.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,9 +68,6 @@ export default function AllLooksScreen() {
       setImageUri(uri);
     }
   };
-
-  const { usuario } = useUsuario();
-
 
   const handleEnviarLook = async () => {
     if (!imageUri || !titulo.trim() || !descricao.trim()) {
@@ -112,30 +116,35 @@ export default function AllLooksScreen() {
         onChangeText={setSearch}
       />
 
-      {/* Lista de Looks */}
-      <FlatList
-        data={filteredLooks}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.gridContainer}
-        renderItem={({ item }) => (
-          <LookCard
-            look={item}
-            onDelete={(deletedId) => {
-              setLooks((prev) => prev.filter((l) => l.id !== deletedId));
-            }}
-          />
-        )}
-        ListEmptyComponent={
-          <View style={{ padding: 20, alignItems: 'center' }}>
-            <Text style={styles.emptyText}>
-              Você ainda não possui nenhum look salvo!
-            </Text>
-          </View>
-        }
-      />
-
+      {/* Lista de Looks ou Loading */}
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#B76E79" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredLooks}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.gridContainer}
+          renderItem={({ item }) => (
+            <LookCard
+              look={item}
+              onDelete={(deletedId) => {
+                setLooks((prev) => prev.filter((l) => l.id !== deletedId));
+              }}
+            />
+          )}
+          ListEmptyComponent={
+            <View style={{ padding: 20, alignItems: 'center' }}>
+              <Text style={styles.emptyText}>
+                Você ainda não possui nenhum look salvo!
+              </Text>
+            </View>
+          }
+        />
+      )}
 
       {/* Modal Enviar Look */}
       <Modal visible={modalVisible} animationType="slide" transparent>
