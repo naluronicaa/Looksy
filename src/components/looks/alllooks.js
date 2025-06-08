@@ -30,7 +30,7 @@ export default function LookCard({ look, onDelete }) {
             closeModal();
             if (onDelete) onDelete(look.id);
           } catch (err) {
-            Alert.alert('Erro', err.response?.data?.message || err.message);
+            console.log('Erro', err.response?.data?.message || err.message);
           }
         },
       },
@@ -42,7 +42,7 @@ export default function LookCard({ look, onDelete }) {
       <TouchableOpacity style={styles.card} onPress={openModal}>
         <Image
           source={
-            look.imagem_uri?.startsWith('file')
+            look.imagem_uri?.startsWith('data:image')
               ? { uri: look.imagem_uri }
               : look.img || require('../../../assets/clothes-placeholder.jpg')
           }
@@ -60,9 +60,13 @@ export default function LookCard({ look, onDelete }) {
       >
         <Pressable style={styles.modalOverlay} onPress={closeModal}>
           <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Ionicons name='close-circle' size={28} color="#B76E79" />
+            </TouchableOpacity>
+
             <Image
               source={
-                look.imagem_uri?.startsWith('file')
+                look.imagem_uri?.startsWith('data:image')
                   ? { uri: look.imagem_uri }
                   : look.img || require('../../../assets/clothes-placeholder.jpg')
               }
@@ -70,10 +74,6 @@ export default function LookCard({ look, onDelete }) {
             />
             <Text style={styles.modalTitle}>{look.titulo || look.title}</Text>
             <Text style={styles.modalDesc}>{look.descricao || look.description}</Text>
-
-            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Text style={styles.closeButtonText}>Fechar</Text>
-            </TouchableOpacity>
 
             <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
               <Ionicons name="trash-outline" size={18} color="#fff" />
@@ -148,15 +148,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   closeButton: {
-    marginTop: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: '#B76E79',
-  },
-  closeButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    position: 'absolute',
+    top: -14,
+    right: -14,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 0,
+    zIndex: 10,
+    elevation: 6,
   },
   deleteButton: {
     marginTop: 10,

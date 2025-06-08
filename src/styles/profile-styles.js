@@ -23,12 +23,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-  },
   username: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -151,7 +145,33 @@ export default StyleSheet.create({
     alignSelf: 'center',
     marginTop: 8,
   },
-  
+  imageWrapper: {
+    position: 'relative',
+    width: 120,
+    height: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    resizeMode: 'cover',
+  },
+
+  cameraButton: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    backgroundColor: '#B76E79',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+
 });
-
-

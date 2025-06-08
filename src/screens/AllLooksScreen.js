@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import BottomNavBar from '../components/navigation-bar/NavBar';
 import LookCard from '../components/looks/alllooks';
 import { listarLooks, cadastrarLook } from '../services/looksService';
+import { useUsuario } from '../contexts/UserContext';
 
 export default function AllLooksScreen() {
   const [search, setSearch] = useState('');
@@ -32,7 +33,7 @@ export default function AllLooksScreen() {
       const data = await listarLooks();
       setLooks(data);
     } catch (err) {
-      Alert.alert('Erro ao carregar looks', err.response?.data?.message || err.message);
+      console.log('Erro ao carregar looks', err.response?.data?.message || err.message);
     }
   };
 
@@ -49,14 +50,20 @@ export default function AllLooksScreen() {
 
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
+      base64: true,
       allowsEditing: true,
       quality: 0.7,
     });
 
     if (!result.canceled && result.assets.length > 0) {
-      setImageUri(result.assets[0].uri);
+      const base64 = result.assets[0].base64;
+      const uri = `data:image/jpeg;base64,${base64}`;
+      setImageUri(uri);
     }
   };
+
+  const { usuario } = useUsuario();
+
 
   const handleEnviarLook = async () => {
     if (!imageUri || !titulo.trim() || !descricao.trim()) {
@@ -66,6 +73,7 @@ export default function AllLooksScreen() {
 
     try {
       const novoLook = {
+        usuario_id: usuario.id,
         imagem_uri: imageUri,
         titulo,
         descricao,
@@ -112,11 +120,22 @@ export default function AllLooksScreen() {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.gridContainer}
         renderItem={({ item }) => (
-          <LookCard look={item} onDelete={(deletedId) => {
-            setLooks((prev) => prev.filter((l) => l.id !== deletedId));
-          }} />
+          <LookCard
+            look={item}
+            onDelete={(deletedId) => {
+              setLooks((prev) => prev.filter((l) => l.id !== deletedId));
+            }}
+          />
         )}
+        ListEmptyComponent={
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Text style={styles.emptyText}>
+              Você ainda não possui nenhum look salvo!
+            </Text>
+          </View>
+        }
       />
+
 
       {/* Modal Enviar Look */}
       <Modal visible={modalVisible} animationType="slide" transparent>
@@ -281,5 +300,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 10,
     fontWeight: 'bold',
+  },
+  emptyText: {
+    color: '#7A3B46',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    fontStyle: 'italic',
   },
 });

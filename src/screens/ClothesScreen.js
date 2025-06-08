@@ -12,12 +12,15 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import BottomNavBar from '../components/navigation-bar/NavBar';
 import { listarRoupas, deletarRoupa } from '../services/clothesService';
 
 export default function ClothesScreen() {
   const [search, setSearch] = useState('');
   const [clothes, setClothes] = useState([]);
+  const navigation = useNavigation();
 
   const carregarRoupas = async () => {
     try {
@@ -60,7 +63,11 @@ export default function ClothesScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <Text style={styles.title}>Minhas Peças</Text>
+        <Text style={styles.title}>Meu Guarda-Roupa</Text>
+        <TouchableOpacity style={styles.uploadButton} onPress={() => navigation.navigate('Adicionar')}>
+          <Ionicons name="camera-outline" size={22} color="#fff" />
+          <Text style={styles.uploadText}>Enviar Look</Text>
+        </TouchableOpacity>
       </View>
 
       <TextInput
@@ -95,6 +102,13 @@ export default function ClothesScreen() {
             </TouchableOpacity>
           </View>
         )}
+        ListEmptyComponent={
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Text style={styles.emptyText}>
+              Você ainda não possui nenhum look salvo!
+            </Text>
+          </View>
+        }
       />
 
       <BottomNavBar activeTab="Roupas" />
@@ -111,14 +125,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: Platform.OS === 'android' ? 35 : 10,
   },
-  header: {
+ header: {
+    flexDirection: 'row',
     paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#B76E79',
+  },
+  uploadButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#B76E79',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  }, uploadText: {
+    color: '#fff',
+    marginLeft: 6,
+    fontWeight: 'bold',
+    fontSize: 13,
   },
   searchInput: {
     borderColor: '#B76E79',
@@ -175,5 +205,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 13,
     fontWeight: 'bold',
+  },
+  emptyText: {
+    color: '#7A3B46',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    fontStyle: 'italic',
   },
 });

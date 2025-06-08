@@ -53,11 +53,16 @@ export default function FormScreen() {
       setStep(step + 1);
     } else {
       try {
-        // Prepara objeto com todas as respostas
+        const respostasConvertidas = {};
+        Object.keys(answers).forEach((key) => {
+          respostasConvertidas[`pergunta${key}`] = answers[key];
+        });
+
         const dadosParaAPI = {
           usuario_id: usuario.id,
-          respostas: answers
+          ...respostasConvertidas
         };
+
 
         await salvarOuAtualizarQuestionario(dadosParaAPI);
         Alert.alert('Sucesso!', 'Respostas salvas com sucesso!');

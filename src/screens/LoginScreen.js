@@ -40,26 +40,24 @@ export default function LoginScreen() {
       login({ ...userData, token }); // salva no contexto global
       navigation.navigate('Home');
     } catch (err) {
-      console.error('Erro no login:', err);
+      let mensagem = 'Erro inesperado. Tente novamente.';
 
       if (err.response) {
-        // A requisição foi feita e o servidor respondeu com um status diferente de 2xx
-        Alert.alert(
-          'Erro no login',
-          `Status: ${err.response.status}\nMensagem: ${err.response.data?.message || 'Erro desconhecido'}`
-        );
+        if (err.response.status === 401) {
+          mensagem = 'E-mail ou senha incorretos.';
+        } else if (err.response.data?.message) {
+          mensagem = err.response.data.message;
+        } else {
+          mensagem = `Erro ${err.response.status}.`;
+        }
       } else if (err.request) {
-        // A requisição foi feita mas não houve resposta
-        Alert.alert(
-          'Sem resposta do servidor',
-          'Não foi possível se conectar com o servidor. Verifique sua conexão e tente novamente.'
-        );
-      } else {
-        // Outro erro (ex: erro de configuração)
-        Alert.alert('Erro inesperado', err.message || 'Erro desconhecido');
+        mensagem = 'Sem resposta do servidor. Verifique sua conexão.';
+      } else if (err.message) {
+        mensagem = err.message;
       }
-    }
 
+      Alert.alert('Erro no login', mensagem);
+    }
   };
 
   return (

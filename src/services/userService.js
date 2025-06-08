@@ -36,3 +36,10 @@ export const buscarUsuarioPorEmail = async (email) => {
   const response = await api.get(`/usuarios/email/${email}`);
   return response.data;
 };
+
+export const atualizarImagemUsuario = async (usuarioId, imagem_url) => {
+  const response = await api.put(`/usuarios/${usuarioId}/imagem`, {
+    imagem_url,
+  });
+  return response.data;
+};

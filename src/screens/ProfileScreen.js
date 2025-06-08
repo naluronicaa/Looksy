@@ -17,16 +17,20 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import * as ImagePicker from 'expo-image-picker';
+
 import { useUsuario } from '../contexts/UserContext';
 import {
   atualizarUsuario,
   trocarSenha,
+  deletarUsuario,
+  atualizarImagemUsuario
 } from '../services/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-  const { usuario, logout } = useUsuario();
+  const { usuario, logout, login: atualizarContexto } = useUsuario();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -46,6 +50,13 @@ export default function ProfileScreen() {
   const saveProfile = async () => {
     try {
       await atualizarUsuario(usuario.id, newUsername, newEmail);
+
+      atualizarContexto({
+        ...usuario,
+        nome: newUsername,
+        email: newEmail,
+      });
+
       Alert.alert('Perfil atualizado com sucesso!');
       setModalVisible(false);
     } catch (error) {
@@ -68,6 +79,31 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleTrocarImagem = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão negada', 'Você precisa permitir o acesso à galeria.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 0.7,
+      base64: true,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      const base64 = `data:image/jpeg;base64,${result.assets[0].base64}`;
+      try {
+        await atualizarImagemUsuario(usuario.id, base64);
+        atualizarContexto({ ...usuario, imagem_url: base64 });
+        Alert.alert('Foto atualizada com sucesso!');
+      } catch (err) {
+        Alert.alert('Erro ao atualizar imagem', err.response?.data?.message || err.message);
+      }
+    }
+  };
+
   const handleLogout = async () => {
     await AsyncStorage.removeItem('token');
     logout(); // limpa contexto
@@ -85,10 +121,24 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.profileContainer}>
-          <Image source={require('../../assets/profile-placeholder.jpg')} style={styles.profileImage} />
+          <View style={styles.imageWrapper}>
+            <Image
+              source={
+                usuario?.imagem_url
+                  ? { uri: usuario.imagem_url }
+                  : require('../../assets/profile-placeholder.jpg')
+              }
+              style={styles.profileImage}
+            />
+            <TouchableOpacity style={styles.cameraButton} onPress={handleTrocarImagem}>
+              <Ionicons name="camera" size={16} color="#fff" />
+            </TouchableOpacity>
+          </View>
+
           <Text style={styles.username}>{usuario?.nome}</Text>
           <Text style={styles.email}>{usuario?.email}</Text>
         </View>
+
 
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.optionItem} onPress={() => setModalVisible(true)}>
@@ -127,7 +177,9 @@ export default function ProfileScreen() {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Editar Perfil</Text>
+              <Text style={styles.optionText}>Nome</Text>
               <TextInput style={styles.input} value={newUsername} onChangeText={setNewUsername} placeholder="Nome" />
+              <Text style={styles.optionText}>E-mail</Text>
               <TextInput style={styles.input} value={newEmail} onChangeText={setNewEmail} placeholder="E-mail" />
               <TouchableOpacity style={styles.saveButton} onPress={saveProfile}>
                 <Text style={styles.buttonText}>Salvar</Text>

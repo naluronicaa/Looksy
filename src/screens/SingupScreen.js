@@ -41,21 +41,17 @@ export default function SignupScreen() {
     }
 
     try {
-      // Cria novo usuário
       await criarUsuario(name, email, password);
 
-      // Faz login automático
       const token = await loginAPI(email, password);
+
       const usuarioInfo = await buscarUsuarioPorEmail(email);
-
-      // Salva no contexto global
       salvarContexto({ ...usuarioInfo, token });
-
-      // Redireciona para o formulário inicial
       navigation.reset({ index: 0, routes: [{ name: 'Form' }] });
     } catch (err) {
       Alert.alert('Erro ao cadastrar', err.response?.data?.message || err.message);
     }
+
   };
 
   return (

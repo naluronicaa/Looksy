@@ -74,6 +74,7 @@ export default function WardrobeScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 0.7,
+      base64: true,
     });
 
     if (!result.canceled && result.assets.length > 0) {
@@ -97,7 +98,7 @@ export default function WardrobeScreen() {
   };
 
   const handleSalvar = async () => {
-    if (!fotoUri || !categoriaSelecionada || !subtipoSelecionado || usosSelecionados.length === 0) {
+    if (!categoriaSelecionada || !subtipoSelecionado || usosSelecionados.length === 0) {
       Alert.alert('Preencha todos os campos obrigatórios');
       return;
     }

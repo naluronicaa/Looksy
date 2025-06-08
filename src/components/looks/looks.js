@@ -1,5 +1,4 @@
 // src/components/looks/RecentLooksCarousel.js
-
 import React, { useEffect, useState } from 'react';
 import {
   Text,
@@ -7,7 +6,6 @@ import {
   Image,
   StyleSheet,
   View,
-  Alert,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { listarLooksRecentes } from '../../services/looksService';
@@ -20,7 +18,7 @@ export default function RecentLooksCarousel({ onSelectLook }) {
       const data = await listarLooksRecentes();
       setLooks(data);
     } catch (err) {
-      Alert.alert('Erro ao carregar looks recentes', err.response?.data?.message || err.message);
+      console.log('Erro ao carregar looks recentes', err.response?.data?.message || err.message);
     }
   };
 
@@ -51,7 +49,7 @@ export default function RecentLooksCarousel({ onSelectLook }) {
           >
             <Image
               source={
-                item.imagem_uri?.startsWith('file')
+                item.imagem_uri?.startsWith('data:image')
                   ? { uri: item.imagem_uri }
                   : require('../../../assets/clothes-placeholder.jpg')
               }

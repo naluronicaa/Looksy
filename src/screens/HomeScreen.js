@@ -60,8 +60,15 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>☺︎ Look Recente</Text>
         {selectedLook ? (
           <View style={styles.mainLookArea}>
-            <Image source={selectedLook.img} style={styles.mainLookImage} />
-            <Text style={styles.mainLookTitle}>{selectedLook.title}</Text>
+            <Image
+              source={
+                selectedLook.imagem_uri?.startsWith('data:image')
+                  ? { uri: selectedLook.imagem_uri }
+                  : require('../../assets/clothes-placeholder.jpg')
+              }
+              style={styles.mainLookImage}
+            />
+            <Text style={styles.mainLookTitle}>{selectedLook.titulo}</Text>
           </View>
         ) : (
           <Text style={[styles.mainLookTitle, { marginLeft: 20 }]}>
