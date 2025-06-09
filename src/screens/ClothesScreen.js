@@ -69,7 +69,7 @@ export default function ClothesScreen() {
         <Text style={styles.title}>Meu Guarda-Roupa</Text>
         <TouchableOpacity style={styles.uploadButton} onPress={() => navigation.navigate('Adicionar')}>
           <Ionicons name="camera-outline" size={22} color="#fff" />
-          <Text style={styles.uploadText}>Enviar Look</Text>
+          <Text style={styles.uploadText}>Enviar Roupa</Text>
         </TouchableOpacity>
       </View>
 
@@ -102,10 +102,26 @@ export default function ClothesScreen() {
                 }
                 style={styles.cardImage}
               />
-              <Text style={styles.cardTitle}>{item.subtipo}</Text>
-              <Text style={styles.cardDesc}>{item.descricao}</Text>
-              <Text style={styles.cardUsos}>📍 {item.usos?.join(', ')}</Text>
-              <TouchableOpacity onPress={() => removerRoupa(item.id)}>
+              <View style={styles.infoRow}>
+                <Text style={styles.cardTitle}>{item.subtipo}</Text>
+              </View>
+
+              {item.descricao?.trim() !== '' && (
+                <View style={styles.infoRow}>
+                  <Ionicons name="document-text-outline" size={14} color="#7A3B46" style={styles.icon} />
+                  <Text style={styles.cardDesc}>{item.descricao}</Text>
+                </View>
+              )}
+
+              {item.usos?.length > 0 && (
+                <View style={styles.infoRow}>
+                  <Ionicons name="location-outline" size={14} color="#7A3B46" style={styles.icon} />
+                  <Text style={styles.cardUsos}>{item.usos.join(', ')}</Text>
+                </View>
+              )}
+
+              <TouchableOpacity onPress={() => removerRoupa(item.id)} style={styles.infoRow}>
+                <Ionicons name="trash-outline" size={14} color="#B76E79" style={styles.icon} />
                 <Text style={styles.deleteText}>Excluir</Text>
               </TouchableOpacity>
             </View>

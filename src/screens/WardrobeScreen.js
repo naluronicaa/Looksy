@@ -260,14 +260,38 @@ export default function WardrobeScreen() {
           {/* Resumo */}
           <Text style={styles.summaryTitle}>Resumo da Peça</Text>
           <View style={styles.summaryContainer}>
-            {fotoUri && <Text style={styles.summaryText}>📸 Imagem adicionada</Text>}
-            {categoriaSelecionada && <Text style={styles.summaryText}>Categoria: {categoriaSelecionada}</Text>}
-            {subtipoSelecionado && <Text style={styles.summaryText}>Tipo: {subtipoSelecionado}</Text>}
-            {descricao !== '' && <Text style={styles.summaryText}>📝 {descricao}</Text>}
+            {fotoUri && (
+              <View style={styles.summaryItem}>
+                <Ionicons name="camera-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Text style={styles.summaryText}>Imagem adicionada</Text>
+              </View>
+            )}
+            {categoriaSelecionada && (
+              <View style={styles.summaryItem}>
+                <Ionicons name="pricetag-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Text style={styles.summaryText}>Categoria: {categoriaSelecionada}</Text>
+              </View>
+            )}
+            {subtipoSelecionado && (
+              <View style={styles.summaryItem}>
+                <Ionicons name="layers-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Text style={styles.summaryText}>Tipo: {subtipoSelecionado}</Text>
+              </View>
+            )}
+            {descricao !== '' && (
+              <View style={styles.summaryItem}>
+                <Ionicons name="document-text-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Text style={styles.summaryText}>{descricao}</Text>
+              </View>
+            )}
             {usosSelecionados.length > 0 && (
-              <Text style={styles.summaryText}>📍 Usos: {usosSelecionados.join(', ')}</Text>
+              <View style={styles.summaryItem}>
+                <Ionicons name="location-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Text style={styles.summaryText}>Usos: {usosSelecionados.join(', ')}</Text>
+              </View>
             )}
           </View>
+
 
           {/* Botão salvar */}
           <TouchableOpacity style={styles.saveButton} onPress={handleSalvar}>

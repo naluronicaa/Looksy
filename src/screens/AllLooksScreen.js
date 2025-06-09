@@ -68,7 +68,7 @@ export default function AllLooksScreen() {
   };
 
   const handleEnviarLook = async () => {
-    if (!imageUri || !titulo.trim() || !descricao.trim()) {
+    if (!imageUri || !titulo.trim()) {
       Alert.alert('Preencha todos os campos e selecione uma imagem.');
       return;
     }

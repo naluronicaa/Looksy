@@ -63,8 +63,8 @@ export const styles = StyleSheet.create({
   },
   cardImage: {
     width: '100%',
-    height: 100,
-    borderRadius: 8,
+    height: 150,
+    borderRadius: 4,
     marginBottom: 8,
     resizeMode: 'cover',
   },
@@ -104,4 +104,15 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+
+  icon: {
+    marginRight: 6,
+    marginTop: 1,
+  },
+
 });

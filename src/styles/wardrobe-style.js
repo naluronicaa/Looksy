@@ -150,4 +150,15 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 13,
     },
+    summaryItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 6,
+    },
+
+    icon: {
+        marginRight: 6,
+        marginTop: 1,
+    },
+
 });
