@@ -19,6 +19,17 @@ import HomeScreen from './src/screens/HomeScreen';
 import AllLooksScreen from './src/screens/AllLooksScreen';
 import ClothesScreen from './src/screens/ClothesScreen';
 
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
+
 const Stack = createStackNavigator();
 
 export default function App() {

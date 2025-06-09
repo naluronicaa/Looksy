@@ -15,6 +15,11 @@ import styles from '../styles/profile-styles';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker';
+
+
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
 import * as ImagePicker from 'expo-image-picker';
 
@@ -45,6 +50,8 @@ export default function ProfileScreen() {
 
   const [notificationTime, setNotificationTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
+
+  const [selectedWeekday, setSelectedWeekday] = useState(2);
 
   const saveProfile = async () => {
     try {
@@ -110,6 +117,41 @@ export default function ProfileScreen() {
       index: 0,
       routes: [{ name: 'Login' }],
     });
+  };
+
+  const agendarNotificacaoSemanal = async (diaSemana, hora, minuto) => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão negada', 'Você precisa permitir notificações para usar este recurso.');
+      return;
+    }
+
+    await Notifications.cancelAllScheduledNotificationsAsync();
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Looksy ✨',
+        body: 'Oiee, a Sky ta te chamando para planejarmos seus looks da semana!',
+      },
+      trigger: {
+        weekday: diaSemana,
+        hour: hora,
+        minute: minuto,
+        repeats: true,
+      },
+    });
+
+    Alert.alert('Notificação agendada!', `Toda ${diasSemanaTexto[diaSemana]} às ${hora}:${String(minuto).padStart(2, '0')}`);
+  };
+
+  const diasSemanaTexto = {
+    1: 'Domingo',
+    2: 'Segunda-feira',
+    3: 'Terça-feira',
+    4: 'Quarta-feira',
+    5: 'Quinta-feira',
+    6: 'Sexta-feira',
+    7: 'Sábado',
   };
 
   return (
@@ -242,14 +284,16 @@ export default function ProfileScreen() {
         </Modal>
 
         {/* Modal Notificações */}
+        {/* Modal Notificações */}
         <Modal visible={modalNotificationVisible} animationType="slide" transparent>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Horário de Notificação</Text>
               <Text style={styles.settingDescription}>
-                Marque um horário para poder consultar a Sky, sua IA estilista personalizada!
+                Marque um horário e dia da semana para a Sky te lembrar de montar seus looks!
               </Text>
 
+              {/* Seletor de horário */}
               <TouchableOpacity style={styles.timeButton} onPress={() => setShowPicker(true)}>
                 <Ionicons name="time-outline" size={18} color="#B76E79" />
                 <Text style={styles.timeText}>
@@ -270,12 +314,44 @@ export default function ProfileScreen() {
                 />
               )}
 
+              {/* Picker de dia da semana */}
+              <Text style={[styles.settingDescription, { marginTop: 10 }]}>Escolha o dia da semana:</Text>
+              <Picker
+                selectedValue={selectedWeekday}
+                onValueChange={(itemValue) => setSelectedWeekday(itemValue)}
+                style={{ width: '100%' }}
+              >
+                <Picker.Item label="Domingo" value={1} />
+                <Picker.Item label="Segunda-feira" value={2} />
+                <Picker.Item label="Terça-feira" value={3} />
+                <Picker.Item label="Quarta-feira" value={4} />
+                <Picker.Item label="Quinta-feira" value={5} />
+                <Picker.Item label="Sexta-feira" value={6} />
+                <Picker.Item label="Sábado" value={7} />
+              </Picker>
+
+              {/* Botão para agendar */}
+              <TouchableOpacity
+                style={[styles.saveButton, { marginTop: 10 }]}
+                onPress={() =>
+                  agendarNotificacaoSemanal(
+                    selectedWeekday,
+                    notificationTime.getHours(),
+                    notificationTime.getMinutes()
+                  )
+                }
+              >
+                <Text style={styles.buttonText}>Agendar Notificação</Text>
+              </TouchableOpacity>
+
+              {/* Fechar */}
               <TouchableOpacity onPress={() => setModalNotificationVisible(false)}>
                 <Text style={styles.cancelText}>Fechar</Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
+
 
         {/* Modal Trocar Senha */}
         <Modal visible={modalPasswordVisible} animationType="slide" transparent>
