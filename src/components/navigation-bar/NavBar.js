@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const screenWidth = Dimensions.get('window').width;
+import styles from '../../styles/navbar-styles';
 
 export default function BottomNavBar ({ activeTab }) {
   const navigation = useNavigation();
@@ -40,35 +40,3 @@ export default function BottomNavBar ({ activeTab }) {
   );
 };
 
-const styles = StyleSheet.create({
-  navbar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingVertical: 12,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 10,
-    position: 'absolute',
-    bottom: 0,
-    width: screenWidth,
-  },
-  navItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  navText: {
-    fontSize: 10,
-    color: '#e8afb7',
-    marginTop: 4,
-    fontWeight: 'bold',
-  },
-  activeNavText: {
-    color: '#B76E79',
-  },
-});

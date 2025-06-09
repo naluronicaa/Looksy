@@ -3,13 +3,12 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import * as Location from 'expo-location';
 import { getWeatherByCoords } from '../../services/weatherServices';
 import { Ionicons } from '@expo/vector-icons';
+import styles  from '../../styles/weatherinfo-styles';
 
 export default function WeatherInfo() {
   const [loading, setLoading] = useState(true);
@@ -105,27 +104,3 @@ export default function WeatherInfo() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: Platform.OS === 'android' ? 0 : 5,
-  },
-  text: {
-    fontSize: 14,
-    color: '#7A3B46',
-    marginBottom: 4,
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  
-  icon: {
-    marginRight: 6,
-  },  
-});
