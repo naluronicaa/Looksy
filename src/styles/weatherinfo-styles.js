@@ -6,7 +6,7 @@ export default StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    color: '#7A3B46',
+    color: '#331307',
     marginBottom: 4,
   },
   errorText: {

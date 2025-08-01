@@ -183,32 +183,32 @@ export default function ProfileScreen() {
 
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.optionItem} onPress={() => setModalVisible(true)}>
-            <Ionicons name="pencil-outline" size={24} color="#B76E79" />
+            <Ionicons name="pencil-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Editar Perfil</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Looks')}>
-            <Ionicons name="shirt-outline" size={24} color="#B76E79" />
+            <Ionicons name="shirt-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Meus Looks</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem}>
-            <Ionicons name="diamond-outline" size={24} color="#B76E79" />
+            <Ionicons name="diamond-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Looksy+</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Form')}>
-            <Ionicons name="document-text-outline" size={24} color="#B76E79" />
+            <Ionicons name="document-text-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Questionário</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={() => setSettingsVisible(true)}>
-            <Ionicons name="settings-outline" size={24} color="#B76E79" />
+            <Ionicons name="settings-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Configurações</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={24} color="#B76E79" />
+            <Ionicons name="log-out-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Sair</Text>
           </TouchableOpacity>
         </View>
@@ -272,7 +272,7 @@ export default function ProfileScreen() {
                   );
                 }}
               >
-                <Ionicons name="trash-outline" size={24} color="#B76E79" />
+                <Ionicons name="trash-outline" size={24} color="#966D46" />
                 <Text style={styles.optionText}>Deletar Conta</Text>
               </TouchableOpacity>
 
@@ -295,7 +295,7 @@ export default function ProfileScreen() {
 
               {/* Seletor de horário */}
               <TouchableOpacity style={styles.timeButton} onPress={() => setShowPicker(true)}>
-                <Ionicons name="time-outline" size={18} color="#B76E79" />
+                <Ionicons name="time-outline" size={18} color="#966D46" />
                 <Text style={styles.timeText}>
                   {notificationTime.getHours().toString().padStart(2, '0')}:
                   {notificationTime.getMinutes().toString().padStart(2, '0')}

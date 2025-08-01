@@ -80,23 +80,23 @@ export default function WeatherInfo() {
     return 'primavera';
   };
 
-  if (loading) return <ActivityIndicator size="small" color="#B76E79" style={{ marginTop: 5 }} />;
+  if (loading) return <ActivityIndicator size="small" color="#966D46" style={{ marginTop: 5 }} />;
   if (error) return <Text style={styles.errorText}>{error}</Text>;
 
   return (
     <View style={styles.container}>
       <View style={styles.infoRow}>
-        <Ionicons name="calendar-outline" size={18} color="#B76E79" style={styles.icon} />
+        <Ionicons name="calendar-outline" size={18} color="#966D46" style={styles.icon} />
         <Text style={styles.text}>{data.dataFormatada}</Text>
       </View>
   
       <View style={styles.infoRow}>
-        <Ionicons name="location-outline" size={18} color="#B76E79" style={styles.icon} />
+        <Ionicons name="location-outline" size={18} color="#966D46" style={styles.icon} />
         <Text style={styles.text}>{data.cidade}</Text>
       </View>
   
       <View style={styles.infoRow}>
-        <Ionicons name="thermometer-outline" size={18} color="#B76E79" style={styles.icon} />
+        <Ionicons name="thermometer-outline" size={18} color="#966D46" style={styles.icon} />
         <Text style={styles.text}>
           {data.temperatura}°C | {data.estacao}, {data.periodo}
         </Text>

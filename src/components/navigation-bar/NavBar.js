@@ -27,7 +27,7 @@ export default function BottomNavBar ({ activeTab }) {
           <Ionicons
             name={tab.icon}
             size={25}
-            color={activeTab === tab.name ? '#B76E79' : '#e8afb7'}
+            color={activeTab === tab.name ? '#966D46' : '#e8afb7'}
           />
           <Text
             style={[styles.navText, activeTab === tab.name && styles.activeNavText]}

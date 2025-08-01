@@ -109,7 +109,7 @@ export default function AllLooksScreen() {
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar look..."
-        placeholderTextColor="#B76E79"
+        placeholderTextColor="#966D46"
         value={search}
         onChangeText={setSearch}
       />
@@ -117,7 +117,7 @@ export default function AllLooksScreen() {
       {/* Lista de Looks ou Loading */}
       {loading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" color="#B76E79" />
+          <ActivityIndicator size="large" color="#966D46" />
         </View>
       ) : (
         <FlatList
@@ -151,7 +151,7 @@ export default function AllLooksScreen() {
             <Text style={styles.modalTitle}>Novo Look</Text>
 
             <TouchableOpacity style={styles.imagePicker} onPress={handlePickImage}>
-              <Ionicons name="image-outline" size={20} color="#B76E79" />
+              <Ionicons name="image-outline" size={20} color="#966D46" />
               <Text style={styles.pickText}>Selecionar Imagem</Text>
             </TouchableOpacity>
 
@@ -162,7 +162,7 @@ export default function AllLooksScreen() {
             <TextInput
               style={styles.input}
               placeholder="Título do Look"
-              placeholderTextColor="#B76E79"
+              placeholderTextColor="#966D46"
               value={titulo}
               onChangeText={setTitulo}
             />
@@ -170,7 +170,7 @@ export default function AllLooksScreen() {
             <TextInput
               style={[styles.input, { height: 80 }]}
               placeholder="Descrição"
-              placeholderTextColor="#B76E79"
+              placeholderTextColor="#966D46"
               value={descricao}
               onChangeText={setDescricao}
               multiline

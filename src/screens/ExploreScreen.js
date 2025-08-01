@@ -42,7 +42,7 @@ export default function ExploreScreen() {
           <TextInput
             style={styles.input}
             placeholder="Ex: Preciso de um look para um jantar romântico hoje à noite em SP"
-            placeholderTextColor="#B76E79"
+            placeholderTextColor="#966D46"
             multiline
             value={inputText}
             onChangeText={setInputText}

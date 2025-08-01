@@ -20,12 +20,12 @@ export default StyleSheet.create({
   cardTitle: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
   },
   cardDesc: {
     fontSize: 12,
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
     marginTop: 4,
   },
@@ -52,12 +52,12 @@ export default StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
   },
   modalDesc: {
     fontSize: 14,
-    color: '#7A3B46',
+    color: '#331307',
     marginVertical: 10,
     textAlign: 'center',
   },

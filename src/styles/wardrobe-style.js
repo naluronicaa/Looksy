@@ -13,13 +13,13 @@ export default StyleSheet.create({
     title: {
         fontSize: 22,
         fontWeight: 'bold',
-        color: '#B76E79',
+        color: '#966D46',
         marginBottom: 10,
     },
     imageButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#B76E79',
+        backgroundColor: '#966D46',
         padding: 10,
         borderRadius: 10,
         alignSelf: 'flex-start',
@@ -47,10 +47,10 @@ export default StyleSheet.create({
         alignSelf: 'flex-start',
     },
     categoryButtonActive: {
-        backgroundColor: '#B76E79',
+        backgroundColor: '#966D46',
     },
     categoryButtonText: {
-        color: '#B76E79',
+        color: '#966D46',
         fontWeight: 'bold',
     },
     categoryButtonTextActive: {
@@ -67,10 +67,10 @@ export default StyleSheet.create({
         marginRight: 10,
     },
     selectedItem: {
-        backgroundColor: '#B76E79',
+        backgroundColor: '#966D46',
     },
     itemText: {
-        color: '#B76E79',
+        color: '#966D46',
         fontWeight: 'bold',
     },
     selectedItemText: {
@@ -78,7 +78,7 @@ export default StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: '#B76E79',
+        borderColor: '#966D46',
         borderRadius: 10,
         padding: 12,
         color: '#333',
@@ -88,7 +88,7 @@ export default StyleSheet.create({
     summaryTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#B76E79',
+        color: '#966D46',
         marginBottom: 8,
     },
     summaryContainer: {
@@ -98,7 +98,7 @@ export default StyleSheet.create({
         marginBottom: 30,
     },
     summaryText: {
-        color: '#7A3B46',
+        color: '#331307',
         marginBottom: 4,
         fontSize: 14,
     },
@@ -108,7 +108,7 @@ export default StyleSheet.create({
         marginBottom: 15,
     },
     saveButton: {
-        backgroundColor: '#B76E79',
+        backgroundColor: '#966D46',
         paddingVertical: 12,
         borderRadius: 10,
         alignItems: 'center',
@@ -133,7 +133,7 @@ export default StyleSheet.create({
         marginBottom: 10,
     },
     checkboxItemActive: {
-        backgroundColor: '#B76E79',
+        backgroundColor: '#966D46',
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 20,
@@ -141,7 +141,7 @@ export default StyleSheet.create({
         marginBottom: 10,
     },
     checkboxText: {
-        color: '#B76E79',
+        color: '#966D46',
         fontWeight: 'bold',
         fontSize: 13,
     },

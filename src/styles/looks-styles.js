@@ -33,11 +33,11 @@ export default StyleSheet.create({
   cardText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
   },
   emptyText: {
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,

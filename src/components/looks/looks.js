@@ -36,7 +36,7 @@ export default function RecentLooksCarousel({ onSelectLook }) {
     return (
         <View style={styles.carouselWrapper}>
           <Text style={styles.emptyText}>Carregando seus looks...</Text>
-          <ActivityIndicator size="small" color="#B76E79" />
+          <ActivityIndicator size="small" color="#966D46" />
         </View>
     );
   }

@@ -31,6 +31,6 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   activeNavText: {
-    color: '#B76E79',
+    color: '#966D46',
   },
 });

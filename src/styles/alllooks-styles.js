@@ -17,12 +17,12 @@ export default StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#B76E79',
+    color: '#966D46',
   },
   uploadButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#B76E79',
+    backgroundColor: '#966D46',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -34,7 +34,7 @@ export default StyleSheet.create({
     fontSize: 13,
   },
   searchInput: {
-    borderColor: '#B76E79',
+    borderColor: '#966D46',
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
@@ -67,7 +67,7 @@ export default StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#7A3B46',
+    color: '#331307',
     marginBottom: 10,
   },
   modalImage: {
@@ -84,12 +84,12 @@ export default StyleSheet.create({
   },
   pickText: {
     marginLeft: 8,
-    color: '#B76E79',
+    color: '#966D46',
     fontWeight: 'bold',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#B76E79',
+    borderColor: '#966D46',
     borderRadius: 10,
     padding: 10,
     width: '100%',
@@ -98,7 +98,7 @@ export default StyleSheet.create({
     fontSize: 14,
   },
   saveButton: {
-    backgroundColor: '#B76E79',
+    backgroundColor: '#966D46',
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -109,13 +109,13 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   cancelText: {
-    color: '#B76E79',
+    color: '#966D46',
     fontSize: 14,
     marginTop: 10,
     fontWeight: 'bold',
   },
   emptyText: {
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,

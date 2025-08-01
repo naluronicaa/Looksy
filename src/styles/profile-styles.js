@@ -17,7 +17,7 @@ export default StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#B76E79',
+    color: '#966D46',
   },
   profileContainer: {
     alignItems: 'center',
@@ -26,11 +26,11 @@ export default StyleSheet.create({
   username: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#7A3B46',
+    color: '#331307',
   },
   email: {
     fontSize: 14,
-    color: '#B76E79',
+    color: '#966D46',
   },
   optionsContainer: {
     width: '100%',
@@ -45,7 +45,7 @@ export default StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: '#7A3B46',
+    color: '#331307',
     marginLeft: 10,
   },
   modalContainer: {
@@ -64,19 +64,19 @@ export default StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#B76E79',
+    color: '#966D46',
     marginBottom: 10,
   },
   input: {
     width: '100%',
     padding: 10,
     borderWidth: 1,
-    borderColor: '#B76E79',
+    borderColor: '#966D46',
     borderRadius: 10,
     marginBottom: 10,
   },
   saveButton: {
-    backgroundColor: '#B76E79',
+    backgroundColor: '#966D46',
     padding: 10,
     borderRadius: 10,
     marginTop: 10,
@@ -90,12 +90,12 @@ export default StyleSheet.create({
   },
   cancelText: {
     marginTop: 10,
-    color: '#B76E79',
+    color: '#966D46',
     fontSize: 14,
   },
   settingOption: {
     fontSize: 16,
-    color: '#7A3B46',
+    color: '#331307',
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F8E1E7',
@@ -104,7 +104,7 @@ export default StyleSheet.create({
   },
   settingDescription: {
     fontSize: 13,
-    color: '#7A3B46',
+    color: '#331307',
     marginTop: 5,
     marginBottom: 8,
   },
@@ -121,12 +121,12 @@ export default StyleSheet.create({
   timeText: {
     marginLeft: 8,
     fontSize: 16,
-    color: '#B76E79',
+    color: '#966D46',
     fontWeight: 'bold',
   },
   settingDescription: {
     fontSize: 13,
-    color: '#7A3B46',
+    color: '#331307',
     marginTop: 5,
     marginBottom: 8,
   },
@@ -164,7 +164,7 @@ export default StyleSheet.create({
     position: 'absolute',
     bottom: 5,
     right: 5,
-    backgroundColor: '#B76E79',
+    backgroundColor: '#966D46',
     width: 28,
     height: 28,
     borderRadius: 14,

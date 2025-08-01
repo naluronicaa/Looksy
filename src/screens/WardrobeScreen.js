@@ -251,7 +251,7 @@ export default function WardrobeScreen() {
           <TextInput
             style={styles.input}
             placeholder="Descrição personalizada (ex: Vestido preto justo com brilho)"
-            placeholderTextColor="#B76E79"
+            placeholderTextColor="#966D46"
             multiline
             value={descricao}
             onChangeText={setDescricao}
@@ -262,31 +262,31 @@ export default function WardrobeScreen() {
           <View style={styles.summaryContainer}>
             {fotoUri && (
               <View style={styles.summaryItem}>
-                <Ionicons name="camera-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Ionicons name="camera-outline" size={16} color="#966D46" style={styles.icon} />
                 <Text style={styles.summaryText}>Imagem adicionada</Text>
               </View>
             )}
             {categoriaSelecionada && (
               <View style={styles.summaryItem}>
-                <Ionicons name="pricetag-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Ionicons name="pricetag-outline" size={16} color="#966D46" style={styles.icon} />
                 <Text style={styles.summaryText}>Categoria: {categoriaSelecionada}</Text>
               </View>
             )}
             {subtipoSelecionado && (
               <View style={styles.summaryItem}>
-                <Ionicons name="layers-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Ionicons name="layers-outline" size={16} color="#966D46" style={styles.icon} />
                 <Text style={styles.summaryText}>Tipo: {subtipoSelecionado}</Text>
               </View>
             )}
             {descricao !== '' && (
               <View style={styles.summaryItem}>
-                <Ionicons name="document-text-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Ionicons name="document-text-outline" size={16} color="#966D46" style={styles.icon} />
                 <Text style={styles.summaryText}>{descricao}</Text>
               </View>
             )}
             {usosSelecionados.length > 0 && (
               <View style={styles.summaryItem}>
-                <Ionicons name="location-outline" size={16} color="#B76E79" style={styles.icon} />
+                <Ionicons name="location-outline" size={16} color="#966D46" style={styles.icon} />
                 <Text style={styles.summaryText}>Usos: {usosSelecionados.join(', ')}</Text>
               </View>
             )}

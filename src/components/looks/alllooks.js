@@ -62,7 +62,7 @@ export default function LookCard({ look, onDelete }) {
         <Pressable style={styles.modalOverlay} onPress={closeModal}>
           <View style={styles.modalContent}>
             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Ionicons name='close-circle' size={28} color="#B76E79" />
+              <Ionicons name='close-circle' size={28} color="#966D46" />
             </TouchableOpacity>
 
             <Image

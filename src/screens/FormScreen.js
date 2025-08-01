@@ -103,7 +103,7 @@ export default function FormScreen() {
               <Text style={styles.buttonText}>Começar Questionário</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleSkip} style={styles.skipBtn}>
-              <Ionicons name="arrow-back" size={18} color="#B76E79" />
+              <Ionicons name="arrow-back" size={18} color="#966D46" />
               <Text style={styles.skipText}>Responder depois</Text>
             </TouchableOpacity>
           </>
@@ -114,7 +114,7 @@ export default function FormScreen() {
             <TextInput
               style={styles.input}
               placeholder={questions[step].placeholder}
-              placeholderTextColor="#B76E79"
+              placeholderTextColor="#966D46"
               value={answers[questions[step].id] || ''}
               onChangeText={handleInput}
             />
@@ -129,7 +129,7 @@ export default function FormScreen() {
               </TouchableOpacity>
             </View>
             <TouchableOpacity onPress={handleSkip} style={styles.skipBtnBottom}>
-              <Ionicons name="arrow-undo" size={16} color="#B76E79" />
+              <Ionicons name="arrow-undo" size={16} color="#966D46" />
               <Text style={styles.skipText}>Responder depois</Text>
             </TouchableOpacity>
           </>

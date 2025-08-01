@@ -76,14 +76,14 @@ export default function ClothesScreen() {
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar por categoria, tipo ou descrição..."
-        placeholderTextColor="#B76E79"
+        placeholderTextColor="#966D46"
         value={search}
         onChangeText={setSearch}
       />
 
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#B76E79" />
+          <ActivityIndicator size="large" color="#966D46" />
         </View>
       ) : (
         <FlatList
@@ -108,20 +108,20 @@ export default function ClothesScreen() {
 
               {item.descricao?.trim() !== '' && (
                 <View style={styles.infoRow}>
-                  <Ionicons name="document-text-outline" size={14} color="#7A3B46" style={styles.icon} />
+                  <Ionicons name="document-text-outline" size={14} color="#331307" style={styles.icon} />
                   <Text style={styles.cardDesc}>{item.descricao}</Text>
                 </View>
               )}
 
               {item.usos?.length > 0 && (
                 <View style={styles.infoRow}>
-                  <Ionicons name="location-outline" size={14} color="#7A3B46" style={styles.icon} />
+                  <Ionicons name="location-outline" size={14} color="#331307" style={styles.icon} />
                   <Text style={styles.cardUsos}>{item.usos.join(', ')}</Text>
                 </View>
               )}
 
               <TouchableOpacity onPress={() => removerRoupa(item.id)} style={styles.infoRow}>
-                <Ionicons name="trash-outline" size={14} color="#B76E79" style={styles.icon} />
+                <Ionicons name="trash-outline" size={14} color="#966D46" style={styles.icon} />
                 <Text style={styles.deleteText}>Excluir</Text>
               </TouchableOpacity>
             </View>

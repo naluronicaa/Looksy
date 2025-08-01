@@ -6,20 +6,20 @@ export default StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#B76E79',
+    color: '#966D46',
     textAlign: 'center',
     marginTop: 20,
     marginBottom: 5
   },
   subtitle: {
     fontSize: 14,
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
     marginBottom: 20
   },
   input: {
     borderWidth: 1,
-    borderColor: '#B76E79',
+    borderColor: '#966D46',
     borderRadius: 10,
     padding: 15,
     backgroundColor: '#fff',
@@ -29,7 +29,7 @@ export default StyleSheet.create({
     textAlignVertical: 'top',
   },
   button: {
-    backgroundColor: '#B76E79',
+    backgroundColor: '#966D46',
     padding: 12,
     borderRadius: 10,
     marginTop: 15,
@@ -44,7 +44,7 @@ export default StyleSheet.create({
     maxHeight: 300,
   },
   responseText: {
-    color: '#7A3B46',
+    color: '#331307',
     fontSize: 16,
     lineHeight: 22,
   },
@@ -55,7 +55,7 @@ export default StyleSheet.create({
   },
   secondaryButton: {
     borderWidth: 1,
-    borderColor: '#B76E79',
+    borderColor: '#966D46',
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -64,7 +64,7 @@ export default StyleSheet.create({
     marginHorizontal: 5,
   },
   secondaryButtonText: {
-    color: '#B76E79',
+    color: '#966D46',
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',

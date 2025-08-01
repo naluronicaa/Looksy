@@ -6,20 +6,20 @@ export default StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#B76E79',
+        color: '#966D46',
         marginBottom: 10,
         textAlign: 'center'
     },
     subtitle: {
         fontSize: 14,
-        color: '#7A3B46',
+        color: '#331307',
         marginBottom: 25,
         textAlign: 'center'
     },
     question: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#7A3B46',
+        color: '#331307',
         marginBottom: 12,
         textAlign: 'center'
     },
@@ -27,13 +27,13 @@ export default StyleSheet.create({
         width: '100%',
         padding: 12,
         borderWidth: 1,
-        borderColor: '#B76E79',
+        borderColor: '#966D46',
         borderRadius: 10,
         backgroundColor: '#fff',
         marginBottom: 15
     },
     button: {
-        backgroundColor: '#B76E79',
+        backgroundColor: '#966D46',
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 10,
@@ -51,7 +51,7 @@ export default StyleSheet.create({
         marginTop: 10
     },
     backText: {
-        color: '#B76E79',
+        color: '#966D46',
         fontSize: 14,
         fontWeight: 'bold',
         paddingVertical: 10,
@@ -61,6 +61,6 @@ export default StyleSheet.create({
     },
     skipBtn: { marginTop: 25, flexDirection: 'row', alignItems: 'center' },
     skipBtnBottom: { marginTop: 30, flexDirection: 'row', alignItems: 'center' },
-    skipText: { color: '#B76E79', fontSize: 14, marginLeft: 6, fontWeight: 'bold' },
+    skipText: { color: '#966D46', fontSize: 14, marginLeft: 6, fontWeight: 'bold' },
     questionImage: { width: 200, height: 200, borderRadius: 10, marginBottom: 15, resizeMode: 'cover' },
 })

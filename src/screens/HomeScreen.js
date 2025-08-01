@@ -51,7 +51,7 @@ export default function HomeScreen() {
               Assine o plano premium e desbloqueie mais looks personalizados!
             </Text>
             <TouchableOpacity onPress={() => setShowSubscriptionBanner(false)}>
-              <Ionicons name="close-circle" size={24} color="#B76E79" />
+              <Ionicons name="close-circle" size={24} color="#966D46" />
             </TouchableOpacity>
           </View>
         )}

@@ -61,33 +61,33 @@ export default function SignupScreen() {
         <Text style={styles.slogan}>Crie sua Conta</Text>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="person-outline" size={20} color="#B76E79" style={styles.icon} />
+          <Ionicons name="person-outline" size={20} color="#966D46" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Nome"
-            placeholderTextColor="#B76E79"
+            placeholderTextColor="#966D46"
             value={name}
             onChangeText={setName}
           />
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="mail-outline" size={20} color="#B76E79" style={styles.icon} />
+          <Ionicons name="mail-outline" size={20} color="#966D46" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="E-mail"
-            placeholderTextColor="#B76E79"
+            placeholderTextColor="#966D46"
             value={email}
             onChangeText={setEmail}
           />
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed-outline" size={20} color="#B76E79" style={styles.icon} />
+          <Ionicons name="lock-closed-outline" size={20} color="#966D46" style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Senha"
-            placeholderTextColor="#B76E79"
+            placeholderTextColor="#966D46"
             secureTextEntry
             value={password}
             onChangeText={setPassword}

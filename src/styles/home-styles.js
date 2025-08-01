@@ -16,7 +16,7 @@ export default StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#B76E79',
+    color: '#966D46',
   },
   infoArea: {
     paddingHorizontal: 20,
@@ -24,7 +24,7 @@ export default StyleSheet.create({
   },
   dateText: {
     fontSize: 14,
-    color: '#7A3B46',
+    color: '#331307',
     marginBottom: 4,
   },
   errorText: {
@@ -45,13 +45,13 @@ export default StyleSheet.create({
   bannerText: {
     flex: 1,
     fontSize: 14,
-    color: '#7A3B46',
+    color: '#331307',
     marginRight: 10,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#B76E79',
+    color: '#966D46',
     marginLeft: 20,
     marginTop: 10,
   },
@@ -67,7 +67,7 @@ export default StyleSheet.create({
   },
   mainLookTitle: {
     fontSize: 14,
-    color: '#7A3B46',
+    color: '#331307',
     marginTop: 5,
     textAlign: 'center',
   }

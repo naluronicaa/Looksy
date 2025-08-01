@@ -20,12 +20,12 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#B76E79',
+    color: '#966D46',
   },
   uploadButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#B76E79',
+    backgroundColor: '#966D46',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     fontSize: 13,
   },
   searchInput: {
-    borderColor: '#B76E79',
+    borderColor: '#966D46',
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
@@ -71,29 +71,29 @@ export const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
   },
   cardDesc: {
     fontSize: 12,
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
     marginTop: 4,
   },
   cardUsos: {
     fontSize: 11,
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
     marginTop: 4,
   },
   deleteText: {
-    color: '#B76E79',
+    color: '#966D46',
     marginTop: 6,
     fontSize: 13,
     fontWeight: 'bold',
   },
   emptyText: {
-    color: '#7A3B46',
+    color: '#331307',
     textAlign: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
