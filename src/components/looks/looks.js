@@ -67,7 +67,7 @@ export default function RecentLooksCarousel({ onSelectLook }) {
               source={
                 item.imagem_uri?.startsWith('data:image')
                   ? { uri: item.imagem_uri }
-                  : require('../../../assets/clothes-placeholder.jpg')
+                  : require('../../../assets/placeholders/clothes-placeholder.jpg')
               }
               style={styles.cardImage}
             />

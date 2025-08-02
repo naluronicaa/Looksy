@@ -98,7 +98,7 @@ export default function ClothesScreen() {
                 source={
                   item.foto_uri?.startsWith('file')
                     ? { uri: item.foto_uri }
-                    : require('../../assets/clothes-placeholder.jpg')
+                    : require('../../assets/placeholer/clothes-placeholder.jpg')
                 }
                 style={styles.cardImage}
               />

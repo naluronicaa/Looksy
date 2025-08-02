@@ -15,16 +15,16 @@ import { salvarOuAtualizarQuestionario } from '../services/questionsService';
 import styles from '../styles/form-styles';
 
 const questionImages = {
-  '1': require('../../assets/q1.jpg'),
-  '2': require('../../assets/q2.jpg'),
-  '3': require('../../assets/q3.jpg'),
-  '4': require('../../assets/q4.jpg'),
-  '5': require('../../assets/q5.jpg'),
-  '6': require('../../assets/q6.jpg'),
-  '7': require('../../assets/q7.jpg'),
-  '8': require('../../assets/q8.jpg'),
-  '9': require('../../assets/q9.jpg'),
-  '10': require('../../assets/q10.jpg'),
+  '1': require('../../assets/forms/q1.jpg'),
+  '2': require('../../assets/forms/q2.jpg'),
+  '3': require('../../assets/forms/q3.jpg'),
+  '4': require('../../assets/forms/q4.jpg'),
+  '5': require('../../assets/forms/q5.jpg'),
+  '6': require('../../assets/forms/q6.jpg'),
+  '7': require('../../assets/forms/q7.jpg'),
+  '8': require('../../assets/forms/q8.jpg'),
+  '9': require('../../assets/forms/q9.jpg'),
+  '10': require('../../assets/forms/q10.jpg'),
 };
 
 const questions = [
@@ -94,7 +94,7 @@ export default function FormScreen() {
       <View style={styles.container}>
         {step === -1 ? (
           <>
-            <Image source={require('../../assets/Better.jpg')} style={styles.questionImage} />
+            <Image source={require('../../assets/forms/Better.jpg')} style={styles.questionImage} />
             <Text style={styles.title}>Vamos te conhecer melhor!</Text>
             <Text style={styles.subtitle}>
               Quanto mais detalhes puder descrever, melhor a Sky (IA) poderá te ajudar!
@@ -105,6 +105,10 @@ export default function FormScreen() {
             <TouchableOpacity onPress={handleSkip} style={styles.skipBtn}>
               <Ionicons name="arrow-back" size={18} color="#966D46" />
               <Text style={styles.skipText}>Responder depois</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Persona')} style={styles.button}>
+              <Ionicons name="woman-sharp" size={18} color="#966D46" />
+              <Text style={styles.skipText}>Escolher meu Perfil</Text>
             </TouchableOpacity>
           </>
         ) : (

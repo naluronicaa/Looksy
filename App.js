@@ -18,6 +18,7 @@ import ExploreScreen from './src/screens/ExploreScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import AllLooksScreen from './src/screens/AllLooksScreen';
 import ClothesScreen from './src/screens/ClothesScreen';
+import PersonaScreen from './src/screens/PersonaScreen';
 
 import * as Notifications from 'expo-notifications';
 
@@ -70,6 +71,7 @@ export default function App() {
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Looks" component={AllLooksScreen} />
             <Stack.Screen name="Adicionar" component={WardrobeScreen} />
+            <Stack.Screen name="Persona" component={PersonaScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserProvider>

@@ -45,7 +45,7 @@ export default function LookCard({ look, onDelete }) {
           source={
             look.imagem_uri?.startsWith('data:image')
               ? { uri: look.imagem_uri }
-              : look.img || require('../../../assets/clothes-placeholder.jpg')
+              : look.img || require('../../../assets/placeholers/clothes-placeholder.jpg')
           }
           style={styles.cardImage}
         />
@@ -69,7 +69,7 @@ export default function LookCard({ look, onDelete }) {
               source={
                 look.imagem_uri?.startsWith('data:image')
                   ? { uri: look.imagem_uri }
-                  : look.img || require('../../../assets/clothes-placeholder.jpg')
+                  : look.img || require('../../../assets/placeholders/clothes-placeholder.jpg')
               }
               style={styles.modalImage}
             />

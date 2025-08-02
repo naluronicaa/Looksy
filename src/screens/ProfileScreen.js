@@ -167,7 +167,7 @@ export default function ProfileScreen() {
               source={
                 usuario?.imagem_url
                   ? { uri: usuario.imagem_url }
-                  : require('../../assets/profile-placeholder.jpg')
+                  : require('../../assets/placeholders/profile-placeholder.jpg')
               }
               style={styles.profileImage}
             />
@@ -200,6 +200,11 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Form')}>
             <Ionicons name="document-text-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Questionário</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Persona')}>
+            <Ionicons name="document-text-outline" size={24} color="#966D46" />
+            <Text style={styles.optionText}>Meu Perfil</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={() => setSettingsVisible(true)}>

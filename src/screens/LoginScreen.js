@@ -61,7 +61,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <ImageBackground source={require('../../assets/bg.jpg')} style={styles.container}>
+    <ImageBackground source={require('../../assets/placeholders/bg.jpg')} style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.brand}>Looksy</Text>
         <Text style={styles.slogan}>Moda Inteligente e Personalizada</Text>
