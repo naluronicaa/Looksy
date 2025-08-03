@@ -37,7 +37,7 @@ export default StyleSheet.create({
   },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   responseBox: {
-    backgroundColor: '#F8E1E7',
+    backgroundColor: '#e8caad',
     borderRadius: 10,
     padding: 15,
     marginTop: 20,

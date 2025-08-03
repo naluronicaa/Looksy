@@ -11,7 +11,6 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    marginTop: 20, // Garante que não encoste na câmera/notch
     marginBottom: 20,
   },
   title: {
@@ -41,7 +40,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#F8E1E7',
+    borderBottomColor: '#e8caad',
   },
   optionText: {
     fontSize: 16,
@@ -98,7 +97,7 @@ export default StyleSheet.create({
     color: '#331307',
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#F8E1E7',
+    borderBottomColor: '#e8caad',
     width: '100%',
     textAlign: 'center',
   },
@@ -111,7 +110,7 @@ export default StyleSheet.create({
   timeButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8E1E7',
+    backgroundColor: '#e8caad',
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 10,
@@ -138,7 +137,7 @@ export default StyleSheet.create({
   timeButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8E1E7',
+    backgroundColor: '#e8caad',
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 10,

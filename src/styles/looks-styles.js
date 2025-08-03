@@ -11,7 +11,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: '#F8E1E7',
+    backgroundColor: '#e8caad',
     padding: 12,
     borderRadius: 12,
     marginRight: 16,

@@ -1,4 +1,3 @@
-// src/screens/ProfileScreen.js
 import React, { useState } from 'react';
 import {
   View,
@@ -187,14 +186,14 @@ export default function ProfileScreen() {
             <Text style={styles.optionText}>Editar Perfil</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Looks')}>
+          {/* <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Looks')}>
             <Ionicons name="shirt-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Meus Looks</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity style={styles.optionItem}>
+          <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('LooksyPlus')}>
             <Ionicons name="diamond-outline" size={24} color="#966D46" />
-            <Text style={styles.optionText}>Looksy+</Text>
+            <Text style={styles.optionText}>Looksy+</Text> 
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Form')}>
@@ -203,8 +202,8 @@ export default function ProfileScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Persona')}>
-            <Ionicons name="document-text-outline" size={24} color="#966D46" />
-            <Text style={styles.optionText}>Meu Perfil</Text>
+            <Ionicons name="man-outline" size={24} color="#966D46" />
+            <Text style={styles.optionText}>Avatar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={() => setSettingsVisible(true)}>
@@ -236,17 +235,18 @@ export default function ProfileScreen() {
             </View>
           </View>
         </Modal>
-
         {/* Modal Configurações */}
         <Modal visible={settingsVisible} animationType="slide" transparent>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Configurações</Text>
-              <TouchableOpacity onPress={() => { setSettingsVisible(false); setModalNotificationVisible(true); }}>
-                <Text style={styles.settingOption}>Notificações</Text>
+              <TouchableOpacity style={styles.optionItem} onPress={() => { setSettingsVisible(false); setModalNotificationVisible(true); }}>
+                <Ionicons name="alarm-outline" size={24} color="#966D46" />
+                <Text style={styles.optionText}>Notificações</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { setSettingsVisible(false); setModalPasswordVisible(true); }}>
-                <Text style={styles.settingOption}>Trocar Senha</Text>
+              <TouchableOpacity style={styles.optionItem} onPress={() => { setSettingsVisible(false); setModalPasswordVisible(true); }}>
+                <Ionicons name="lock-closed-outline" size={24} color="#966D46" />
+                <Text style={styles.optionText}>Trocar Senha</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.optionItem}
@@ -287,8 +287,6 @@ export default function ProfileScreen() {
             </View>
           </View>
         </Modal>
-
-        {/* Modal Notificações */}
         {/* Modal Notificações */}
         <Modal visible={modalNotificationVisible} animationType="slide" transparent>
           <View style={styles.modalContainer}>
@@ -356,8 +354,6 @@ export default function ProfileScreen() {
             </View>
           </View>
         </Modal>
-
-
         {/* Modal Trocar Senha */}
         <Modal visible={modalPasswordVisible} animationType="slide" transparent>
           <View style={styles.modalContainer}>
@@ -394,8 +390,9 @@ export default function ProfileScreen() {
           </View>
         </Modal>
 
-        <BottomNavBar activeTab="Perfil" />
+        
       </View>
+      <BottomNavBar activeTab="Perfil" />
     </SafeAreaView>
   );
 }

@@ -7,12 +7,12 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import styles from '../styles/persona-styles'; 
+import styles from '../styles/persona-styles';
+import { Ionicons } from '@expo/vector-icons';
 
-// Importe as imagens dos avatares aqui
-// As chaves devem ser os IDs dos avatares para facilitar a referência
 const avatarImages = {
   '1': require('../../assets/profiles/profile1.png'),
   '2': require('../../assets/profiles/profile2.png'),
@@ -25,7 +25,7 @@ const avatars = [
   { id: '3', name: 'Modelo 3' },
 ];
 
-const { width } = Dimensions.get('window'); // Pega a largura da tela para o carrossel
+const { width } = Dimensions.get('window');
 
 export default function AvatarScreen() {
   const navigation = useNavigation();
@@ -33,24 +33,38 @@ export default function AvatarScreen() {
   const scrollViewRef = useRef(null);
 
   const handleSelectAvatar = (avatarId) => {
-    // Por enquanto, apenas o console.log como você pediu
     console.log(`Você selecionou o modelo ${avatarId}`);
-    // No futuro, aqui você salvaria a escolha do usuário
-    // e navegaria para a próxima tela
     // navigation.navigate('ProximaTela');
   };
 
   const handleScroll = (event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
     const newIndex = Math.round(contentOffsetX / width);
+    if (newIndex !== currentAvatarIndex) {
+      setCurrentAvatarIndex(newIndex);
+    }
+  };
+
+  const handlePrevious = () => {
+    let newIndex;
+    if (currentAvatarIndex === 0) {
+      newIndex = avatars.length - 1; // Volta para o último item
+    } else {
+      newIndex = currentAvatarIndex - 1;
+    }
+    scrollViewRef.current.scrollTo({ x: newIndex * width, animated: true });
     setCurrentAvatarIndex(newIndex);
   };
-  
-  // Função para lidar com o comportamento de "voltar" ao primeiro item no final
-  const handleNextPress = () => {
-    let nextIndex = (currentAvatarIndex + 1) % avatars.length;
-    scrollViewRef.current.scrollTo({ x: nextIndex * width, animated: true });
-    setCurrentAvatarIndex(nextIndex);
+
+  const handleNext = () => {
+    let newIndex;
+    if (currentAvatarIndex === avatars.length - 1) {
+      newIndex = 0; // Volta para o primeiro item
+    } else {
+      newIndex = currentAvatarIndex + 1;
+    }
+    scrollViewRef.current.scrollTo({ x: newIndex * width, animated: true });
+    setCurrentAvatarIndex(newIndex);
   };
 
   return (
@@ -61,25 +75,32 @@ export default function AvatarScreen() {
           Selecione o avatar que mais combina com você para começar!
         </Text>
 
-        <ScrollView
-          ref={scrollViewRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          style={styles.carouselContainer}
-          contentContainerStyle={styles.carouselContent}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-        >
-          {avatars.map((avatar, index) => (
-            <View key={avatar.id} style={styles.avatarCard}>
-              <Image source={avatarImages[avatar.id]} style={styles.avatarImage} />
-              <Text style={styles.avatarName}>{avatar.name}</Text>
-            </View>
-          ))}
-        </ScrollView>
-        
-        {/* Adicionando botões de navegação para o carrossel */}
+        <View style={styles.carouselWrapper}>
+          <TouchableOpacity onPress={handlePrevious} style={styles.carouselArrow}>
+            <Ionicons name="chevron-back" size={30} color="#5D4D47" />
+          </TouchableOpacity>
+          
+          <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+          >
+            {avatars.map((avatar) => (
+              <View key={avatar.id} style={styles.avatarCard}>
+                <Image source={avatarImages[avatar.id]} style={styles.avatarImage} />
+                <Text style={styles.avatarName}>{avatar.name}</Text>
+              </View>
+            ))}
+          </ScrollView>
+
+          <TouchableOpacity onPress={handleNext} style={styles.carouselArrow}>
+            <Ionicons name="chevron-forward" size={30} color="#5D4D47" />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.paginationContainer}>
           {avatars.map((_, index) => (
             <View
@@ -97,6 +118,11 @@ export default function AvatarScreen() {
           onPress={() => handleSelectAvatar(avatars[currentAvatarIndex].id)}
         >
           <Text style={styles.buttonText}>Escolher este</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.skipBtn}>
+          <Ionicons name="arrow-back" size={18} color="#966D46" />
+          <Text style={styles.skipText}>Escolher depois</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

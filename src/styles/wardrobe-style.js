@@ -41,7 +41,7 @@ export default StyleSheet.create({
         marginBottom: 20,
     },
     categoryButton: {
-        backgroundColor: '#F8E1E7',
+        backgroundColor: '#e8caad',
         padding: 10,
         borderRadius: 8,
         alignSelf: 'flex-start',
@@ -63,7 +63,7 @@ export default StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 15,
         borderRadius: 20,
-        backgroundColor: '#F8E1E7',
+        backgroundColor: '#e8caad',
         marginRight: 10,
     },
     selectedItem: {
@@ -92,7 +92,7 @@ export default StyleSheet.create({
         marginBottom: 8,
     },
     summaryContainer: {
-        backgroundColor: '#F8E1E7',
+        backgroundColor: '#e8caad',
         borderRadius: 10,
         padding: 10,
         marginBottom: 30,
@@ -125,7 +125,7 @@ export default StyleSheet.create({
         marginBottom: 20,
     },
     checkboxItem: {
-        backgroundColor: '#F8E1E7',
+        backgroundColor: '#e8caad',
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 20,

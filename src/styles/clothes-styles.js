@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
   },
   card: {
-    backgroundColor: '#F8E1E7',
+    backgroundColor: '#e8caad',
     width: cardWidth,
     borderRadius: 10,
     padding: 10,

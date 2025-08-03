@@ -34,7 +34,7 @@ export default StyleSheet.create({
   },
   banner: {
     flexDirection: 'row',
-    backgroundColor: '#F8E1E7',
+    backgroundColor: '#e8caad',
     padding: 10,
     marginHorizontal: 20,
     borderRadius: 10,

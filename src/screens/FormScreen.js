@@ -102,14 +102,18 @@ export default function FormScreen() {
             <TouchableOpacity style={styles.button} onPress={() => setStep(0)}>
               <Text style={styles.buttonText}>Começar Questionário</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Persona')} style={styles.skipBtn}>
+              <Ionicons name="woman-sharp" size={18} color="#966D46" />
+              <Text style={styles.skipText}>Escolher meu Perfil</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={handleSkip} style={styles.skipBtn}>
               <Ionicons name="arrow-back" size={18} color="#966D46" />
               <Text style={styles.skipText}>Responder depois</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Persona')} style={styles.button}>
-              <Ionicons name="woman-sharp" size={18} color="#966D46" />
-              <Text style={styles.skipText}>Escolher meu Perfil</Text>
-            </TouchableOpacity>
+
+            
           </>
         ) : (
           <>

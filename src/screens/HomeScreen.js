@@ -12,7 +12,9 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WeatherInfo from '../components/weather-info/WeatherInfo';
 import RecentLooksCarousel from '../components/looks/looks';
-import styles from '../styles/home-styles'
+import styles from '../styles/home-styles';
+
+import { useUsuario } from '../contexts/UserContext';
 
 export default function HomeScreen() {
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(false);
@@ -30,6 +32,9 @@ export default function HomeScreen() {
     }
   };
 
+  const { usuario } = useUsuario();
+  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -38,7 +43,7 @@ export default function HomeScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Olá, Explore seus Looks!</Text>
+          <Text style={styles.headerTitle}>Olá {usuario?.nome}, explore seus Looks!</Text>
         </View>
 
         <View style={styles.infoArea}>
@@ -82,7 +87,9 @@ export default function HomeScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
 
+       
       <BottomNavBar activeTab="Home" />
+       <View style={{ height: 100 }} />
     </SafeAreaView>
   );
 }

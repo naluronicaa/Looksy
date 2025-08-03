@@ -1,7 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 export default StyleSheet.create({
-    safeContainer: { flex: 1, backgroundColor: '#fff' },
+    safeContainer: { flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'android' ? 30 : 10,},
     container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
     title: {
         fontSize: 24,
@@ -56,7 +56,7 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         paddingVertical: 10,
         paddingHorizontal: 16,
-        backgroundColor: '#F8E1E7',
+        backgroundColor: '#e8caad',
         borderRadius: 10
     },
     skipBtn: { marginTop: 25, flexDirection: 'row', alignItems: 'center' },

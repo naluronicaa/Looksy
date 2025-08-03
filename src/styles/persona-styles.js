@@ -1,47 +1,60 @@
-import { StyleSheet, Dimensions } from 'react-native';
+// src/styles/persona-styles.js
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: '#fff', // Fundo branco
+    backgroundColor: '#fff', 
+    paddingTop: Platform.OS === 'android' ? 30 : 10,
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    marginBottom: 100,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#5D4D47', // Marrom Café - Cor escura
+    color: '#5D4D47',
     marginBottom: 10,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#966D46', // Marrom Acinzentado - Cor clara
+    color: '#966D46',
     marginBottom: 40,
     textAlign: 'center',
   },
-  carouselContainer: {
-    height: width * 0.8, // Altura do carrossel baseada na largura da tela
-  },
-  carouselContent: {
+  carouselWrapper: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    height: width * 0.8,
   },
+  carouselArrow: {
+    paddingHorizontal: 10,
+  },
+  // REMOVA O ESTILO carouselContainer DAQUI, se existir
+  // carouselContainer: {
+  //   height: width * 0.8,
+  // },
+  // carouselContent: {
+  //   alignItems: 'center',
+  // },
   avatarCard: {
-    width: width * 0.7, // Largura de cada "card" do avatar
+    width: width * 0.7,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: width * 0.05, // Espaçamento entre os cards
+    marginHorizontal: width * 0.05,
   },
   avatarImage: {
     width: width * 0.6,
-    height: width * 0.6,
-    borderRadius: (width * 0.6) / 2, // Para imagens circulares
+    height: width * 0.8,
+    borderRadius: 10,
     resizeMode: 'cover',
     marginBottom: 20,
   },
@@ -51,7 +64,7 @@ export default StyleSheet.create({
     color: '#5D4D47',
   },
   button: {
-    backgroundColor: '#966D46', // Cor do botão
+    backgroundColor: '#966D46',
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 8,
@@ -64,7 +77,6 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  // Estilos para a paginação (pontinhos)
   paginationContainer: {
     flexDirection: 'row',
     marginTop: 20,
@@ -80,5 +92,6 @@ export default StyleSheet.create({
   paginationDotActive: {
     opacity: 1,
   },
+  skipBtn: { marginTop: 25, flexDirection: 'row', alignItems: 'center' },
+  skipText: { color: '#966D46', fontSize: 14, marginLeft: 6, fontWeight: 'bold' },
 });
-;

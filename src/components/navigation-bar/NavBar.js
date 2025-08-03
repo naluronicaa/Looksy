@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context'; 
 import { useNavigation } from '@react-navigation/native';
 
-import styles from '../../styles/navbar-styles';
+import { getNavbarStyles } from '../../styles/navbar-styles'; 
 
 export default function BottomNavBar ({ activeTab }) {
   const navigation = useNavigation();
@@ -12,10 +13,13 @@ export default function BottomNavBar ({ activeTab }) {
     { name: 'Home', icon: 'home-outline' },
     { name: 'Looks', icon: 'bookmark-outline' },
     { name: 'Roupas', icon: 'shirt-outline' },
-    { name: 'Adicionar', icon: 'camera-outline' },
+    { name: 'Calendario', icon: 'calendar-outline' },
     { name: 'Explorar', icon: 'chatbubble-ellipses-outline' },
     { name: 'Perfil', icon: 'person-outline' },
   ];
+
+  const insets = useSafeAreaInsets();
+  const styles = getNavbarStyles(insets);
 
   return (
     <View style={styles.navbar}>
@@ -27,7 +31,7 @@ export default function BottomNavBar ({ activeTab }) {
           <Ionicons
             name={tab.icon}
             size={25}
-            color={activeTab === tab.name ? '#966D46' : '#e8afb7'}
+            color={activeTab === tab.name ? '#af845cff' : '#e8caad'}
           />
           <Text
             style={[styles.navText, activeTab === tab.name && styles.activeNavText]}
