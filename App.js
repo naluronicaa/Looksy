@@ -18,7 +18,6 @@ import ExploreScreen from './src/screens/ExploreScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import AllLooksScreen from './src/screens/AllLooksScreen';
 import ClothesScreen from './src/screens/ClothesScreen';
-import PersonaScreen from './src/screens/PersonaScreen'
 import CalendarScreen from './src/screens/CalendarScreen';
 import LooksyPlusScreen from './src/screens/LooksyPlusScreen'
 
@@ -73,7 +72,6 @@ export default function App() {
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Looks" component={AllLooksScreen} />
             <Stack.Screen name="Adicionar" component={WardrobeScreen} />
-            <Stack.Screen name="Persona" component={PersonaScreen} />
             <Stack.Screen name="Calendario" component={CalendarScreen} />
             <Stack.Screen name="LooksyPlus" component={LooksyPlusScreen} />
           </Stack.Navigator>

@@ -31,6 +31,18 @@ import {
 } from '../services/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const sexos = [
+  { label: 'Feminino', value: 'feminino' },
+  { label: 'Masculino', value: 'masculino' },
+  { label: 'Não Binário', value: 'nao_binario' }
+];
+
+const biotipos = [
+  { label: 'Magro(a)', value: 'magro' },
+  { label: 'Médio(a)', value: 'médio' },
+  { label: 'Gordinho(a)', value: 'gordinho' }
+];
+
 export default function ProfileScreen() {
   const navigation = useNavigation();
   const { usuario, logout, login: atualizarContexto } = useUsuario();
@@ -42,6 +54,9 @@ export default function ProfileScreen() {
 
   const [newUsername, setNewUsername] = useState(usuario?.nome || '');
   const [newEmail, setNewEmail] = useState(usuario?.email || '');
+  const [newIdade, setNewIdade] = useState(usuario?.idade ? String(usuario.idade) : '');
+  const [newSexo, setNewSexo] = useState(usuario?.sexo || '');
+  const [newBiotipo, setNewBiotipo] = useState(usuario?.biotipo || '');
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -54,12 +69,21 @@ export default function ProfileScreen() {
 
   const saveProfile = async () => {
     try {
-      await atualizarUsuario(usuario.id, newUsername, newEmail);
+      await atualizarUsuario(usuario.id, {
+        nome: newUsername,
+        email: newEmail,
+        idade: newIdade,
+        sexo: newSexo,
+        biotipo: newBiotipo,
+      });
 
       atualizarContexto({
         ...usuario,
         nome: newUsername,
         email: newEmail,
+        idade: newIdade,
+        sexo: newSexo,
+        biotipo: newBiotipo,
       });
 
       Alert.alert('Perfil atualizado com sucesso!');
@@ -176,7 +200,9 @@ export default function ProfileScreen() {
           </View>
 
           <Text style={styles.username}>{usuario?.nome}</Text>
+          <Text style={styles.email}>{usuario?.idade} anos - {usuario?.sexo} - {usuario?.biotipo}</Text>
           <Text style={styles.email}>{usuario?.email}</Text>
+          
         </View>
 
 
@@ -186,25 +212,20 @@ export default function ProfileScreen() {
             <Text style={styles.optionText}>Editar Perfil</Text>
           </TouchableOpacity>
 
-          {/* <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Looks')}>
+          <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Looks')}>
             <Ionicons name="shirt-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Meus Looks</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('LooksyPlus')}>
             <Ionicons name="diamond-outline" size={24} color="#966D46" />
-            <Text style={styles.optionText}>Looksy+</Text> 
+            <Text style={styles.optionText}>Looksy+</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Form')}>
+          {/* <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Form')}>
             <Ionicons name="document-text-outline" size={24} color="#966D46" />
             <Text style={styles.optionText}>Questionário</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('Persona')}>
-            <Ionicons name="man-outline" size={24} color="#966D46" />
-            <Text style={styles.optionText}>Avatar</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity style={styles.optionItem} onPress={() => setSettingsVisible(true)}>
             <Ionicons name="settings-outline" size={24} color="#966D46" />
@@ -223,9 +244,62 @@ export default function ProfileScreen() {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Editar Perfil</Text>
               <Text style={styles.optionText}>Nome</Text>
-              <TextInput style={styles.input} value={newUsername} onChangeText={setNewUsername} placeholder="Nome" />
+              <TextInput
+                style={styles.input}
+                value={newUsername}
+                onChangeText={setNewUsername}
+                placeholder="Nome"
+              />
+
               <Text style={styles.optionText}>E-mail</Text>
-              <TextInput style={styles.input} value={newEmail} onChangeText={setNewEmail} placeholder="E-mail" />
+              <TextInput
+                style={styles.input}
+                value={newEmail}
+                onChangeText={setNewEmail}
+                placeholder="E-mail"
+              />
+
+              <Text style={styles.optionText}>Idade</Text>
+              <TextInput
+                style={styles.input}
+                value={newIdade}
+                onChangeText={text => setNewIdade(text.replace(/[^0-9]/g, ''))}
+                placeholder="Sua idade"
+                keyboardType="number-pad"
+                maxLength={3}
+              />
+
+
+              <Text style={styles.optionText}>Sexo</Text>
+              <View style={styles.pickerWrapper}>
+                <Picker
+                  selectedValue={newSexo}
+                  onValueChange={(itemValue) => setNewSexo(itemValue)}
+                  style={styles.picker}
+                  dropdownIconColor="#966D46"
+                >
+                  <Picker.Item label="Selecione..." value="" color="#a5a5a5" />
+                  {sexos.map((sexo) => (
+                    <Picker.Item key={sexo.value} label={sexo.label} value={sexo.value} />
+                  ))}
+                </Picker>
+              </View>
+
+              <Text style={styles.optionText}>Biotipo</Text>
+              <View style={styles.pickerWrapper}>
+                <Picker
+                  selectedValue={newBiotipo}
+                  onValueChange={(itemValue) => setNewBiotipo(itemValue)}
+                  style={styles.picker}
+                  dropdownIconColor="#966D46"
+                >
+                  <Picker.Item label="Selecione..." value="" color="#a5a5a5" />
+                  {biotipos.map((bio) => (
+                    <Picker.Item key={bio.value} label={bio.label} value={bio.value} />
+                  ))}
+                </Picker>
+              </View>
+
               <TouchableOpacity style={styles.saveButton} onPress={saveProfile}>
                 <Text style={styles.buttonText}>Salvar</Text>
               </TouchableOpacity>
@@ -235,6 +309,9 @@ export default function ProfileScreen() {
             </View>
           </View>
         </Modal>
+
+
+
         {/* Modal Configurações */}
         <Modal visible={settingsVisible} animationType="slide" transparent>
           <View style={styles.modalContainer}>
@@ -390,7 +467,7 @@ export default function ProfileScreen() {
           </View>
         </Modal>
 
-        
+
       </View>
       <BottomNavBar activeTab="Perfil" />
     </SafeAreaView>

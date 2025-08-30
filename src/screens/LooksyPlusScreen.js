@@ -58,7 +58,7 @@ export default function LooksyPlusScreen() {
         )}
       </ScrollView>
 
-      <BottomNavBar activeTab="Explorar" />
+      <BottomNavBar />
     </SafeAreaView>
   );
-}
+} 

@@ -172,5 +172,19 @@ export default StyleSheet.create({
     borderWidth: 2,
     borderColor: '#fff',
   },
-
+  pickerWrapper: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#966D46',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    marginBottom: 15,
+    overflow: 'hidden',
+  },
+  picker: {
+    width: '100%',
+    color: '#331307',
+    fontSize: 16,
+    minHeight: 44,
+  }
 });

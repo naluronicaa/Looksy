@@ -13,8 +13,19 @@ export const criarUsuario = async (nome, email, senha) => {
   return response.data;
 };
 
-export const atualizarUsuario = async (usuarioId, nome, email) => {
-  const response = await api.put(`/usuarios/${usuarioId}`, { nome, email });
+export const atualizarUsuario = async (usuarioId, data) => {
+  // data pode conter nome, email, idade, sexo, biotipo etc.
+  const response = await api.put(`/usuarios/${usuarioId}`, data);
+  return response.data;
+};
+
+// Atualiza só idade, sexo, biotipo (mas aceita nome/email também se quiser!)
+export const atualizarPerfil = async (usuarioId, { idade, sexo, biotipo }) => {
+  const response = await api.put(`/usuarios/${usuarioId}`, {
+    idade,
+    sexo,
+    biotipo,
+  });
   return response.data;
 };
 
