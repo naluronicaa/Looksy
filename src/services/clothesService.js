@@ -16,19 +16,18 @@ export const listarRoupasRecentes = async () => {
   return response.data;
 };
 
-/**
- * Cadastra uma nova roupa.
- * Exemplo de `data`:
- * {
- *   foto_uri: "uri_da_foto",
- *   categoria: "Parte de Cima",
- *   subtipo: "Blusa",
- *   descricao: "Blusa rosa de tricô",
- *   usos: ["Trabalho", "Férias"]
- * }
- */
 export const cadastrarRoupa = async (data) => {
   const response = await api.post('/roupas', data);
+  return response.data;
+};
+
+/**
+ * Atualiza uma roupa pelo ID.
+ * Exemplo de uso:
+ * atualizarRoupa(10, { nome: "Camisa nova", recusada: 15 })
+ */
+export const atualizarRoupa = async (roupaId, campos) => {
+  const response = await api.put(`/roupas/${roupaId}`, campos);
   return response.data;
 };
 
