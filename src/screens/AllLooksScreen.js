@@ -17,7 +17,8 @@ import BottomNavBar from '../components/navigation-bar/NavBar';
 import LookCard from '../components/looks/alllooks';
 import { listarLooks, cadastrarLook } from '../services/looksService';
 import { useUsuario } from '../contexts/UserContext';
-import styles from '../styles/alllooks-styles'
+import DateTimePicker from '@react-native-community/datetimepicker';
+import styles from '../styles/alllooks-styles';
 
 export default function AllLooksScreen() {
   const [search, setSearch] = useState('');
@@ -27,6 +28,8 @@ export default function AllLooksScreen() {
   const [imageUri, setImageUri] = useState(null);
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
+  const [dataUso, setDataUso] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const { usuario } = useUsuario();
 
@@ -50,6 +53,9 @@ export default function AllLooksScreen() {
     setImageUri(null);
     setTitulo('');
     setDescricao('');
+    const now = new Date();
+    // Sempre inicializa para hoje, hora zero, sem bug de UTC
+    setDataUso(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
     setModalVisible(true);
   };
 
@@ -79,6 +85,7 @@ export default function AllLooksScreen() {
         imagem_uri: imageUri,
         titulo,
         descricao,
+        data_uso: dataUso, // Sempre data local
       };
 
       await cadastrarLook(novoLook);
@@ -175,6 +182,37 @@ export default function AllLooksScreen() {
               onChangeText={setDescricao}
               multiline
             />
+
+            {/* Data de uso */}
+            <Text style={styles.label}>Data de uso</Text>
+            <TouchableOpacity
+              style={styles.dateButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Ionicons name="calendar-outline" size={18} color="#966D46" />
+              <Text style={styles.dateButtonText}>
+                {dataUso.toLocaleDateString('pt-BR')}
+              </Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={dataUso}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  setShowDatePicker(false);
+                  if (selectedDate) {
+                    // Sempre cria nova data local zerada
+                    const localDate = new Date(
+                      selectedDate.getFullYear(),
+                      selectedDate.getMonth(),
+                      selectedDate.getDate()
+                    );
+                    setDataUso(localDate);
+                  }
+                }}
+              />
+            )}
 
             <TouchableOpacity style={styles.saveButton} onPress={handleEnviarLook}>
               <Text style={styles.saveButtonText}>Salvar</Text>

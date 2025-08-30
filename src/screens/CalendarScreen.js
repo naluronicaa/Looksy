@@ -1,5 +1,4 @@
-// src/screens/CalendarScreen.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,26 +12,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
 import styles from '../styles/calendar-styles';
 import BottomNavBar from '../components/navigation-bar/NavBar';
-import LookImageModal from '../components/look-calendar/LookImageModal'
-
-// Simulação de dados para os looks do dia
-const dailyLooks = {
-  '2025-08-01': {
-    title: 'Look Casual de Sexta-feira',
-    description: 'Calça jeans, camiseta branca e tênis. Perfeito para um dia relaxado.',
-    image: require('../../assets/placeholders/clothes-placeholder.jpg'),
-  },
-  '2025-08-05': {
-    title: 'Look de Trabalho Elegante',
-    description: 'Blazer bege, calça de alfaiataria e sapatilha. Profissional e confortável.',
-    image: require('../../assets/placeholders/clothes-placeholder.jpg'),
-  },
-  '2025-08-10': {
-    title: 'Look para Jantar',
-    description: 'Vestido preto, salto alto e bolsa de mão. Look clássico e elegante.',
-    image: require('../../assets/placeholders/clothes-placeholder.jpg'),
-  },
-};
+import LookImageModal from '../components/look-calendar/LookImageModal';
+import { listarLooks } from '../services/looksService';
 
 export default function CalendarScreen() {
   const navigation = useNavigation();
@@ -40,26 +21,50 @@ export default function CalendarScreen() {
   const [lookDoDia, setLookDoDia] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Função para lidar com a seleção de um dia
+  const [looksPorData, setLooksPorData] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  // Carrega looks do backend e agrupa por data_uso ('YYYY-MM-DD')
+  useEffect(() => {
+    const carregarLooks = async () => {
+      setLoading(true);
+      try {
+        const data = await listarLooks();
+        // Agrupa looks por data_uso no formato string
+        const porData = {};
+        data.forEach(look => {
+          if (look.data_uso) {
+            // Garante que é só o dia (YYYY-MM-DD), ignora hora se vier
+            const dataDia = look.data_uso.length > 10 ? look.data_uso.slice(0, 10) : look.data_uso;
+            if (!porData[dataDia]) porData[dataDia] = [];
+            porData[dataDia].push(look);
+          }
+        });
+        setLooksPorData(porData);
+      } catch (err) {
+        Alert.alert('Erro ao carregar looks', err.response?.data?.message || err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    carregarLooks();
+  }, []);
+
+  // Ao selecionar uma data
   const handleDayPress = (day) => {
-    setSelectedDate(day.dateString);
-    setLookDoDia(dailyLooks[day.dateString] || null); // Verifica se há um look para o dia
+    setSelectedDate(day.dateString); // Sempre 'YYYY-MM-DD'
+    setLookDoDia(null);
   };
 
-  // Objeto para marcar os dias no calendário
+  // Marcação no calendário
   const markedDates = {};
-
-  // 1. Marca os dias que já têm um look com uma bolinha
-  Object.keys(dailyLooks).forEach(date => {
+  Object.keys(looksPorData).forEach(date => {
     markedDates[date] = {
       marked: true,
-      dotColor: '#5D4D47', // Cor da bolinha
-      // Se este dia também estiver selecionado, adicione a cor de seleção
+      dotColor: '#5D4D47',
       ...(selectedDate === date && { selected: true, selectedColor: '#5D4D47', selectedTextColor: '#fff' })
     };
   });
-
-  // 2. Garante que o dia selecionado (caso não tenha look) também seja marcado
   if (selectedDate && !markedDates[selectedDate]) {
     markedDates[selectedDate] = {
       selected: true,
@@ -73,12 +78,6 @@ export default function CalendarScreen() {
       'Gerar Looks da Semana',
       'Esta funcionalidade será implementada em uma próxima tela. 😊'
     );
-  };
-  
-  const handleImagePress = () => {
-    if (lookDoDia && lookDoDia.image) {
-      setIsModalVisible(true);
-    }
   };
 
   return (
@@ -114,20 +113,68 @@ export default function CalendarScreen() {
           }}
         />
 
-        {lookDoDia && (
-          <View style={styles.lookContainer}>
-            <Text style={styles.lookTitle}>{lookDoDia.title}</Text>
-            <Text style={styles.lookDescription}>{lookDoDia.description}</Text>
-            <TouchableOpacity onPress={handleImagePress}>
-              <Image source={lookDoDia.image} style={styles.lookImage} />
-            </TouchableOpacity>
+        {loading ? (
+          <View style={{ flex: 1, alignItems: 'center', marginTop: 24 }}>
+            <Text style={{ color: '#966D46', fontSize: 17 }}>Carregando...</Text>
           </View>
-        )}
+        ) : selectedDate && looksPorData[selectedDate] ? (
+          <View style={styles.lookContainer}>
+            <Text style={[styles.lookTitle, { marginBottom: 4 }]}>
+              Looks para o dia {selectedDate}
+            </Text>
+            <Text style={{ color: '#966D46', fontSize: 15, marginBottom: 14, textAlign: 'center', fontWeight: 'bold' }}>
+              Esse dia tem {looksPorData[selectedDate].length} look{looksPorData[selectedDate].length > 1 ? 's' : ''}
+            </Text>
+            {/* Lista VERTICAL de looks */}
+            {looksPorData[selectedDate].map((look, idx) => (
+              <TouchableOpacity
+                key={look.id || idx}
+                onPress={() => {
+                  setLookDoDia(look);
+                  setIsModalVisible(true);
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 16,
+                  backgroundColor: '#fff9f2',
+                  borderRadius: 14,
+                  padding: 10,
+                  elevation: 2
+                }}
+              >
+                <Image
+                  source={
+                    look.imagem_uri
+                      ? { uri: look.imagem_uri }
+                      : require('../../assets/placeholders/clothes-placeholder.jpg')
+                  }
+                  style={[styles.lookImage, { width: 85, height: 85, borderRadius: 12, marginRight: 15 }]}
+                  resizeMode="cover"
+                />
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.lookTitle, { fontSize: 15, marginBottom: 2 }]} numberOfLines={2}>
+                    {look.titulo}
+                  </Text>
+                  <Text style={{ color: '#331307', fontSize: 13 }}>{look.descricao}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : selectedDate ? (
+          <View style={styles.lookContainer}>
+            <Text style={{ color: '#966D46', fontSize: 16, marginTop: 24, textAlign: 'center' }}>
+              Nenhum look registrado para esse dia ainda.
+            </Text>
+          </View>
+        ) : null}
+
+
       </ScrollView>
       <BottomNavBar activeTab="Calendario" />
       <LookImageModal
         visible={isModalVisible}
-        imageUri={lookDoDia?.image}
+        imageUri={lookDoDia?.imagem_uri}
         onClose={() => setIsModalVisible(false)}
       />
     </SafeAreaView>

@@ -200,9 +200,16 @@ export default function ProfileScreen() {
           </View>
 
           <Text style={styles.username}>{usuario?.nome}</Text>
-          <Text style={styles.email}>{usuario?.idade} anos - {usuario?.sexo} - {usuario?.biotipo}</Text>
+          <Text style={styles.email}>
+            {[
+              usuario?.idade ? `${usuario.idade} anos` : null,
+              usuario?.sexo,
+              usuario?.biotipo
+            ].filter(Boolean).join(' - ')}
+          </Text>
+
           <Text style={styles.email}>{usuario?.email}</Text>
-          
+
         </View>
 
 

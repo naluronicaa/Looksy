@@ -72,7 +72,7 @@ export default function HomeScreen() {
               }
               style={styles.mainLookImage}
             />
-            <Text style={styles.mainLookTitle}>{selectedLook.titulo}</Text>
+            <Text style={styles.mainLookTitle}>{selectedLook.titulo} - {new Date(selectedLook.data_uso).toLocaleDateString('pt-BR')}</Text>
           </View>
         ) : (
           <Text style={[styles.mainLookTitle, { marginLeft: 20 }]}>

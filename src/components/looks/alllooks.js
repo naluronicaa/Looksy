@@ -73,8 +73,9 @@ export default function LookCard({ look, onDelete }) {
               }
               style={styles.modalImage}
             />
-            <Text style={styles.modalTitle}>{look.titulo || look.title}</Text>
-            <Text style={styles.modalDesc}>{look.descricao || look.description}</Text>
+            <Text style={styles.modalTitle}>{look.titulo}</Text>
+            <Text style={styles.modalDesc}>{look.descricao}</Text>
+            <Text style={styles.modalDesc}>Uso: {new Date(look.data_uso).toLocaleDateString('pt-BR')}</Text>
 
             <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
               <Ionicons name="trash-outline" size={18} color="#fff" />

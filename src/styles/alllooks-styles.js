@@ -121,4 +121,31 @@ export default StyleSheet.create({
     paddingVertical: 10,
     fontStyle: 'italic',
   },
+  label: {
+  color: '#966D46',
+  fontWeight: 'bold',
+  fontSize: 15,
+  marginTop: 12,
+  marginBottom: 3,
+},
+dateButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: '#966D46',
+  borderRadius: 10,
+  backgroundColor: '#fff',
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  marginBottom: 15,
+  marginTop: 2,
+  minWidth: 160,
+},
+dateButtonText: {
+  color: '#331307',
+  fontSize: 15,
+  marginLeft: 8,
+  fontWeight: '600',
+},
+
 });

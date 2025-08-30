@@ -13,7 +13,13 @@ export default function LookImageModal({ visible, imageUri, onClose }) {
     >
       <View style={modalStyles.container}>
         <Image
-          source={imageUri}
+          source={
+            imageUri
+              ? typeof imageUri === 'string'
+                ? { uri: imageUri }
+                : imageUri
+              : require('../../../assets/placeholders/clothes-placeholder.jpg')
+          }
           style={modalStyles.image}
           resizeMode="contain"
         />
