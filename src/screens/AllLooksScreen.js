@@ -85,6 +85,7 @@ export default function AllLooksScreen() {
         imagem_uri: imageUri,
         titulo,
         descricao,
+        origem: 'Manual',
         data_uso: dataUso, // Sempre data local
       };
 
