@@ -6,23 +6,22 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Keyboard,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useUsuario } from '../contexts/UserContext';
-import { atualizarPerfil } from '../services/userService';
+import { atualizarPerfil, buscarUsuarioPorEmail } from '../services/userService';
 import styles from '../styles/form-styles';
-
-import { Alert } from 'react-native';
 
 // Mapeamento das imagens para cada etapa
 const stepImages = {
   'inicio': require('../../assets/forms/Better.jpg'),
   'idade': require('../../assets/forms/q1.jpg'),
-  'sexo': require('../../assets/forms/q5.jpg'),
-  'biotipo': require('../../assets/forms/q6.jpg'),
-  'review': require('../../assets/forms/q4.jpg'),
+  'sexo': require('../../assets/forms/q2.jpg'),
+  'biotipo': require('../../assets/forms/q3.jpg'),
+  'review': require('../../assets/forms/Final.jpg'),
 };
 
 const sexos = [
@@ -39,7 +38,7 @@ const biotipos = [
 
 export default function FormScreen() {
   const navigation = useNavigation();
-  const { usuario } = useUsuario();
+  const { usuario, login } = useUsuario(); // pega login do contexto
 
   // -3 = tela inicial, -2 = idade, -1 = sexo, 0 = biotipo, 1 = review
   const [step, setStep] = useState(-3);
@@ -50,36 +49,41 @@ export default function FormScreen() {
   });
 
   const handleContinue = async () => {
-  Keyboard.dismiss();
-  if (step < 1) {
-    setStep(step + 1);
-  } else {
-    try {
-      await atualizarPerfil(usuario.id, {
-        idade: answers.idade,
-        sexo: answers.sexo,
-        biotipo: answers.biotipo
-      });
+    Keyboard.dismiss();
+    if (step < 1) {
+      setStep(step + 1);
+    } else {
+      try {
+        await atualizarPerfil(usuario.id, {
+          idade: answers.idade,
+          sexo: answers.sexo,
+          biotipo: answers.biotipo
+        });
 
-      Alert.alert(
-        'Perfil atualizado!',
-        'Seus dados foram salvos com sucesso.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })
-          }
-        ]
-      );
-    } catch (err) {
-      Alert.alert(
-        'Erro ao salvar',
-        err?.response?.data?.message || err?.message || 'Erro desconhecido'
-      );
+        // Pega os dados atualizados do backend
+        const usuarioAtualizado = await buscarUsuarioPorEmail(usuario.email);
+
+        // Atualiza contexto com os dados corretos
+        login(usuarioAtualizado);
+
+        Alert.alert(
+          'Perfil atualizado!',
+          'Seus dados foram salvos com sucesso.',
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })
+            }
+          ]
+        );
+      } catch (err) {
+        Alert.alert(
+          'Erro ao salvar',
+          err?.response?.data?.message || err?.message || 'Erro desconhecido'
+        );
+      }
     }
-  }
-};
-
+  };
 
   const handleBack = () => {
     if (step === -3) {
