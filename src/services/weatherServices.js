@@ -13,14 +13,14 @@ export const getWeatherByCoords = async (lat, lon) => {
 
     return response.data.results;
   } catch (error) {
-    console.error('🔥 ERRO AO CHAMAR A API DO CLIMA');
+    console.error('ERRO AO CHAMAR A API DO CLIMA');
     if (error.response) {
-      console.log('➡️ response.data:', error.response.data);
-      console.log('➡️ response.status:', error.response.status);
+      console.log('response.data:', error.response.data);
+      console.log('response.status:', error.response.status);
     } else if (error.request) {
-      console.log('➡️ request:', error.request);
+      console.log('request:', error.request);
     } else {
-      console.log('➡️ message:', error.message);
+      console.log('message:', error.message);
     }
     throw new Error('Erro ao buscar clima');
   }
