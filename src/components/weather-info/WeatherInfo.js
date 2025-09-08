@@ -1,4 +1,4 @@
-// src/components/ClimaInfo.js
+// src/components/WeatherInfo.js
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -8,9 +8,9 @@ import {
 import * as Location from 'expo-location';
 import { getWeatherByCoords } from '../../services/weatherServices';
 import { Ionicons } from '@expo/vector-icons';
-import styles  from '../../styles/weatherinfo-styles';
+import styles from '../../styles/weatherinfo-styles';
 
-export default function WeatherInfo() {
+export default function WeatherInfo({ onClimaUpdate }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [data, setData] = useState({
@@ -24,7 +24,16 @@ export default function WeatherInfo() {
   useEffect(() => {
     formatarData();
     buscarClima();
+    // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    // Chama o callback do pai sempre que os dados mudam e a temperatura foi definida
+    if (onClimaUpdate && data.temperatura !== null) {
+      onClimaUpdate(data);
+    }
+    // eslint-disable-next-line
+  }, [data]);
 
   const formatarData = () => {
     const now = new Date();
@@ -89,12 +98,10 @@ export default function WeatherInfo() {
         <Ionicons name="calendar-outline" size={18} color="#966D46" style={styles.icon} />
         <Text style={styles.text}>{data.dataFormatada}</Text>
       </View>
-  
       <View style={styles.infoRow}>
         <Ionicons name="location-outline" size={18} color="#966D46" style={styles.icon} />
         <Text style={styles.text}>{data.cidade}</Text>
       </View>
-  
       <View style={styles.infoRow}>
         <Ionicons name="thermometer-outline" size={18} color="#966D46" style={styles.icon} />
         <Text style={styles.text}>

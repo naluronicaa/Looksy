@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  FlatList,
   TextInput,
   SafeAreaView,
   Alert,
@@ -12,37 +11,59 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import BottomNavBar from '../components/navigation-bar/NavBar';
 import { Ionicons } from '@expo/vector-icons';
 import { cadastrarRoupa } from '../services/clothesService';
+import { cadastrarRoupaIA } from '../services/iaService'; // IA aqui!
 import { useUsuario } from '../contexts/UserContext';
+import { Picker } from '@react-native-picker/picker';
 import styles from '../styles/wardrobe-style';
 
-const categorias = {
-  'Parte de Cima': ['Camiseta', 'Blusa', 'Casaco', 'Jaqueta'],
-  'Parte de Baixo': ['Calça', 'Saia', 'Short'],
-  'Calçados': ['Tênis', 'Bota', 'Sandália'],
-  'Acessórios': ['Óculos', 'Chapéu', 'Bolsa', 'Jóias'],
-  'Corpo Inteiro': ['Vestido', 'Macacão'],
-};
+const categoriaList = ['Parte de Cima', 'Parte de Baixo', 'Calçados', 'Acessórios', 'Corpo Inteiro'];
+const subtipoList = ['Camiseta', 'Blusa', 'Casaco', 'Jaqueta', 'Calça', 'Saia', 'Short', 'Tênis', 'Bota', 'Sandália', 'Óculos', 'Chapéu', 'Bolsa', 'Jóias', 'Vestido', 'Macacão'];
+const corList = ['Preto', 'Branco', 'Cinza', 'Azul', 'Verde', 'Vermelho', 'Amarelo', 'Rosa', 'Bege', 'Marrom', 'Colorido'];
+const tecidoList = ['Algodão', 'Linho', 'Poliéster', 'Jeans', 'Couro', 'Sintético', 'Viscose', 'Outro'];
+const estacaoList = ['Verão', 'Inverno', 'Primavera', 'Outono', 'Qualquer'];
+const ocasiaoList = ['Trabalho', 'Passeio de dia', 'Esportes', 'Formal', 'Encontro', 'Balada', 'Férias', 'Casa', 'Escola', 'Outros'];
+const generoList = ['Feminino', 'Masculino', 'Neutro'];
+const faixaEtariaList = ['Jovem', 'Adulto', 'Maduro', 'Qualquer'];
 
 export default function WardrobeScreen() {
   const [fotoUri, setFotoUri] = useState(null);
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState(null);
-  const [subtipoSelecionado, setSubtipoSelecionado] = useState('');
+  const [categoria, setCategoria] = useState('');
+  const [subtipo, setSubtipo] = useState('');
+  const [cor, setCor] = useState('');
+  const [tecido, setTecido] = useState('');
+  const [estacao, setEstacao] = useState('');
+  const [ocasiao, setOcasiao] = useState('');
+  const [genero, setGenero] = useState('');
+  const [faixaEtaria, setFaixaEtaria] = useState('');
+  const [marca, setMarca] = useState('');
+  const [detalhes, setDetalhes] = useState('');
   const [descricao, setDescricao] = useState('');
+  const [recusada, setRecusada] = useState('0');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [usosSelecionados, setUsosSelecionados] = useState([]);
+  const [loadingIA, setLoadingIA] = useState(false);
 
   const { usuario } = useUsuario();
 
-  const toggleUso = (item) => {
-    if (usosSelecionados.includes(item)) {
-      setUsosSelecionados(usosSelecionados.filter((u) => u !== item));
-    } else {
-      setUsosSelecionados([...usosSelecionados, item]);
+  const handleImagem = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão negada', 'Você precisa permitir o acesso à galeria.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 0.7,
+      base64: true,
+    });
+    if (!result.canceled && result.assets.length > 0) {
+      setFotoUri(result.assets[0].uri);
+      Alert.alert('Imagem carregada com sucesso!');
     }
   };
 
@@ -52,53 +73,66 @@ export default function WardrobeScreen() {
       Alert.alert('Permissão negada', 'Você precisa permitir o uso da câmera.');
       return;
     }
-
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 0.7,
     });
-
     if (!result.canceled && result.assets.length > 0) {
       setFotoUri(result.assets[0].uri);
       Alert.alert('Foto tirada com sucesso!');
     }
   };
 
-  const handleImagem = async () => {
+  // Cadastro automático IA:
+  const handleAutoCadastroIA = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permissão negada', 'Você precisa permitir o acesso à galeria.');
       return;
     }
-
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 0.7,
       base64: true,
     });
+    if (result.canceled || result.assets.length === 0) return;
 
-    if (!result.canceled && result.assets.length > 0) {
-      setFotoUri(result.assets[0].uri);
-      Alert.alert('Imagem carregada com sucesso!');
+    const imagemSelecionada = result.assets[0];
+    setFotoUri(imagemSelecionada.uri);
+    setLoadingIA(true);
+
+    try {
+      // IA espera imagem pública (ou local + backend que aceita upload).
+      // Aqui mandamos o base64 como campo imagem_url.
+      const iaResponse = await cadastrarRoupaIA({
+        imagem_url: `data:image/jpeg;base64,${imagemSelecionada.base64}`
+      });
+      // IA retorna atributos (ajuste conforme o backend)
+      const atributos = iaResponse.atributos || {};
+
+      setCategoria(atributos.categoria || '');
+      setSubtipo(atributos.subtipo || atributos.nome || '');
+      setCor(atributos.cor || '');
+      setTecido(atributos.tecido || '');
+      setEstacao(atributos.estacao_ideal || '');
+      setOcasiao(atributos.ocasiao_especifica || '');
+      setGenero(atributos.genero_uso || '');
+      setFaixaEtaria(atributos.faixa_etaria_uso || '');
+      setMarca(atributos.marca || '');
+      setDetalhes(atributos.detalhes || '');
+      setDescricao(atributos.descricao || '');
+      setRecusada('0');
+      setLoadingIA(false);
+
+      Alert.alert('Atributos sugeridos!', 'Confira os campos antes de salvar.');
+    } catch (error) {
+      setLoadingIA(false);
+      Alert.alert('Erro na IA', error.response?.data?.message || error.message || 'Erro ao classificar imagem.');
     }
-  };
-
-  const handleCategoria = (categoria) => {
-    if (categoria === categoriaSelecionada) {
-      setCategoriaSelecionada(null);
-      setSubtipoSelecionado('');
-    } else {
-      setCategoriaSelecionada(categoria);
-      setSubtipoSelecionado('');
-    }
-  };
-
-  const handleSubtipo = (subtipo) => {
-    setSubtipoSelecionado((prev) => (prev === subtipo ? '' : subtipo));
   };
 
   const handleSalvar = async () => {
-    if (!categoriaSelecionada || !subtipoSelecionado || usosSelecionados.length === 0) {
+    if (!categoria || !subtipo || !cor || !tecido || !estacao || !genero) {
       Alert.alert('Preencha todos os campos obrigatórios');
       return;
     }
@@ -106,21 +140,37 @@ export default function WardrobeScreen() {
     try {
       const novaRoupa = {
         foto_uri: fotoUri,
-        categoria: categoriaSelecionada,
-        subtipo: subtipoSelecionado,
+        categoria,
+        subtipo,
+        cor,
+        tecido,
+        estacao_ideal: estacao,
+        ocasiao_especifica: ocasiao,
+        genero_uso: genero,
+        faixa_etaria_uso: faixaEtaria,
+        marca,
+        detalhes,
         descricao,
-        usos: usosSelecionados,
+        recusada: parseInt(recusada) || 0
       };
 
-      const res = await cadastrarRoupa(novaRoupa);
+      await cadastrarRoupa(novaRoupa);
       Alert.alert('Sucesso!', 'Peça salva com sucesso!');
 
       // Limpa os campos
       setFotoUri(null);
-      setCategoriaSelecionada(null);
-      setSubtipoSelecionado('');
+      setCategoria('');
+      setSubtipo('');
+      setCor('');
+      setTecido('');
+      setEstacao('');
+      setOcasiao('');
+      setGenero('');
+      setFaixaEtaria('');
+      setMarca('');
+      setDetalhes('');
       setDescricao('');
-      setUsosSelecionados([]);
+      setRecusada('0');
     } catch (error) {
       Alert.alert('Erro ao salvar roupa', error.response?.data?.message || error.message);
     }
@@ -148,157 +198,160 @@ export default function WardrobeScreen() {
         >
           <Text style={styles.title}>Salvar sua Peça de Roupa</Text>
 
-          {/* Botões de imagem */}
           <View style={styles.imageButtonsRow}>
             <TouchableOpacity style={styles.imageButton} onPress={handleImagem}>
               <Ionicons name="image-outline" size={22} color="#fff" />
               <Text style={styles.imageButtonText}>Galeria</Text>
             </TouchableOpacity>
-
             <TouchableOpacity style={styles.imageButton} onPress={handleCamera}>
               <Ionicons name="camera-outline" size={22} color="#fff" />
               <Text style={styles.imageButtonText}>Tirar Foto</Text>
             </TouchableOpacity>
+            {/* Botão de cadastro automático IA */}
+            <TouchableOpacity style={styles.autoButton} onPress={handleAutoCadastroIA}>
+              <Ionicons name="sparkles-outline" size={22} color="#fff" />
+              <Text style={styles.imageButtonText}>Cadastro Automático</Text>
+            </TouchableOpacity>
           </View>
+
+          {loadingIA && (
+            <View style={{ alignItems: 'center', marginVertical: 10 }}>
+              <ActivityIndicator color="#966D46" size="large" />
+              <Text style={{ color: '#966D46', marginTop: 5 }}>A IA está analisando sua imagem...</Text>
+            </View>
+          )}
 
           {fotoUri && <Image source={{ uri: fotoUri }} style={styles.previewImage} />}
 
-          {/* Categorias e subtipos */}
-          {Object.keys(categorias).map((categoria) => (
-            <View key={categoria} style={styles.categoryBlock}>
-              <TouchableOpacity
-                onPress={() => handleCategoria(categoria)}
-                style={[
-                  styles.categoryButton,
-                  categoriaSelecionada === categoria && styles.categoryButtonActive,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.categoryButtonText,
-                    categoriaSelecionada === categoria && styles.categoryButtonTextActive,
-                  ]}
-                >
-                  {categoria}
-                </Text>
-              </TouchableOpacity>
+          {/* ...restante dos pickers e campos, igual ao código anterior... */}
+          {/* ...coloque todos os campos dos pickers e TextInputs aqui (igual ao anterior)... */}
+          
+          {/* ...copie aqui o restante dos campos de categoria, subtipo, cor, tecido, etc, como no seu código anterior ... */}
 
-              {categoriaSelecionada === categoria && (
-                <FlatList
-                  horizontal
-                  data={categorias[categoria]}
-                  keyExtractor={(item) => item}
-                  showsHorizontalScrollIndicator={false}
-                  style={styles.subtypeList}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      style={[
-                        styles.item,
-                        subtipoSelecionado === item && styles.selectedItem,
-                      ]}
-                      onPress={() => handleSubtipo(item)}
-                    >
-                      <Text
-                        style={[
-                          styles.itemText,
-                          subtipoSelecionado === item && styles.selectedItemText,
-                        ]}
-                      >
-                        {item}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                />
-              )}
-            </View>
-          ))}
-
-          {/* Usos */}
-          <Text style={styles.summaryTitle}>Onde você costuma usar essa peça?</Text>
-          <View style={styles.checkboxGroup}>
-            {[
-              'Trabalho',
-              'Passeio de dia',
-              'Esportes',
-              'Eventos formais',
-              'Encontros',
-              'Balada',
-              'Férias',
-              'Casa',
-              'Compras',
-              'Escola/Faculdade',
-              'Outros',
-            ].map((item) => (
-              <TouchableOpacity
-                key={item}
-                style={usosSelecionados.includes(item) ? styles.checkboxItemActive : styles.checkboxItem}
-                onPress={() => toggleUso(item)}
-              >
-                <Text
-                  style={
-                    usosSelecionados.includes(item)
-                      ? styles.checkboxTextActive
-                      : styles.checkboxText
-                  }
-                >
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            ))}
+          {/* Campos em dropdown */}
+          <Text style={styles.label}>Categoria *</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={categoria}
+              onValueChange={setCategoria}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione..." value="" color="#aaa" />
+              {categoriaList.map(c => <Picker.Item key={c} label={c} value={c} />)}
+            </Picker>
           </View>
-
-          {/* Descrição */}
+          <Text style={styles.label}>Tipo/Subtipo *</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={subtipo}
+              onValueChange={setSubtipo}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione..." value="" color="#aaa" />
+              {subtipoList.map(s => <Picker.Item key={s} label={s} value={s} />)}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Cor *</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={cor}
+              onValueChange={setCor}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione..." value="" color="#aaa" />
+              {corList.map(c => <Picker.Item key={c} label={c} value={c} />)}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Tecido *</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={tecido}
+              onValueChange={setTecido}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione..." value="" color="#aaa" />
+              {tecidoList.map(t => <Picker.Item key={t} label={t} value={t} />)}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Estação ideal *</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={estacao}
+              onValueChange={setEstacao}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione..." value="" color="#aaa" />
+              {estacaoList.map(e => <Picker.Item key={e} label={e} value={e} />)}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Ocasião</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={ocasiao}
+              onValueChange={setOcasiao}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione..." value="" color="#aaa" />
+              {ocasiaoList.map(o => <Picker.Item key={o} label={o} value={o} />)}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Gênero de uso *</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={genero}
+              onValueChange={setGenero}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione..." value="" color="#aaa" />
+              {generoList.map(g => <Picker.Item key={g} label={g} value={g} />)}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Faixa etária</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={faixaEtaria}
+              onValueChange={setFaixaEtaria}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecione..." value="" color="#aaa" />
+              {faixaEtariaList.map(f => <Picker.Item key={f} label={f} value={f} />)}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Marca</Text>
           <TextInput
             style={styles.input}
-            placeholder="Descrição personalizada (ex: Vestido preto justo com brilho)"
-            placeholderTextColor="#966D46"
-            multiline
+            placeholder="Ex: Zara"
+            value={marca}
+            onChangeText={setMarca}
+          />
+          <Text style={styles.label}>Detalhes</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ex: Gola alta, com botões, etc."
+            value={detalhes}
+            onChangeText={setDetalhes}
+          />
+          <Text style={styles.label}>Descrição</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Descrição personalizada da peça"
             value={descricao}
             onChangeText={setDescricao}
+            multiline
           />
-
-          {/* Resumo */}
-          <Text style={styles.summaryTitle}>Resumo da Peça</Text>
-          <View style={styles.summaryContainer}>
-            {fotoUri && (
-              <View style={styles.summaryItem}>
-                <Ionicons name="camera-outline" size={16} color="#966D46" style={styles.icon} />
-                <Text style={styles.summaryText}>Imagem adicionada</Text>
-              </View>
-            )}
-            {categoriaSelecionada && (
-              <View style={styles.summaryItem}>
-                <Ionicons name="pricetag-outline" size={16} color="#966D46" style={styles.icon} />
-                <Text style={styles.summaryText}>Categoria: {categoriaSelecionada}</Text>
-              </View>
-            )}
-            {subtipoSelecionado && (
-              <View style={styles.summaryItem}>
-                <Ionicons name="layers-outline" size={16} color="#966D46" style={styles.icon} />
-                <Text style={styles.summaryText}>Tipo: {subtipoSelecionado}</Text>
-              </View>
-            )}
-            {descricao !== '' && (
-              <View style={styles.summaryItem}>
-                <Ionicons name="document-text-outline" size={16} color="#966D46" style={styles.icon} />
-                <Text style={styles.summaryText}>{descricao}</Text>
-              </View>
-            )}
-            {usosSelecionados.length > 0 && (
-              <View style={styles.summaryItem}>
-                <Ionicons name="location-outline" size={16} color="#966D46" style={styles.icon} />
-                <Text style={styles.summaryText}>Usos: {usosSelecionados.join(', ')}</Text>
-              </View>
-            )}
-          </View>
-
-
-          {/* Botão salvar */}
+          <Text style={styles.label}>Recusada</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Quantidade de recusas"
+            value={recusada}
+            onChangeText={setRecusada}
+            keyboardType="number-pad"
+            maxLength={3}
+          />
           <TouchableOpacity style={styles.saveButton} onPress={handleSalvar}>
             <Text style={styles.saveButtonText}>Salvar</Text>
           </TouchableOpacity>
         </ScrollView>
-
         {!keyboardVisible && <BottomNavBar activeTab="Adicionar" />}
       </KeyboardAvoidingView>
     </SafeAreaView>
